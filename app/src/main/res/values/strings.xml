@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Walk 3:60</string>
+    <string name="title_home">Home</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_history">History</string>
+    <string name="title_healthy_snacks">Healthy Snacks</string>
+    <string name="title_water_calc">Water Calculator</string>
+</resources>
