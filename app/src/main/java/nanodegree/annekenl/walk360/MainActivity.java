@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.screen_fragment, fragment)
-                .addToBackStack(null) //no specific name
+                //.addToBackStack(null) //no specific name
                 .commit();
     }
 
