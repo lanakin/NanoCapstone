@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity
 
         mContext = this;
         mActivityTracker = new ActivityTrackerHelper(mContext);
-        mActivityTracker.requestActivityTransitionUpdates();
+        mActivityTracker.requestActivityTransitionUpdates(); //still started ..
     }
 
     @Override

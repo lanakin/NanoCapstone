@@ -57,6 +57,20 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                         .edit()
                         .putString(ActivityTrackerHelper.DETECTED_ACTIVITY, transTest)
                         .commit();
+
+                if(mostRecentTransition.getActivityType() == DetectedActivity.STILL
+                        || mostRecentTransition.getTransitionType() == DetectedActivity.IN_VEHICLE) //currently dont have, might want to add
+                {
+                    if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
+                        //log time of stillness started
+
+                        //start alarm for reminder to move in 60 minutes
+                            //(alarm manager when it fires handles the start of regular activity
+                            //   updates if it determines that it's been >= 60 mins since user last
+                            //   went still / inactive).
+                    }
+                }
+
             }
 
         }

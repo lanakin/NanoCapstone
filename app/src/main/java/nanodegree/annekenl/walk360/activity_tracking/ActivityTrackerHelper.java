@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.location.ActivityTransition;
 import com.google.android.gms.location.ActivityTransitionRequest;
@@ -20,7 +21,9 @@ public class ActivityTrackerHelper
 {
     public static final String DETECTED_ACTIVITY = "DETECTED_ACTIVITY_360";
     private ActivityRecognitionClient mActivityRecognitionClient;
-    private PendingIntent mPendingIntent;
+
+    private PendingIntent mActivityTransIntent;
+    private PendingIntent mActivityDetectIntent;
     private Context mContext;
 
     public ActivityTrackerHelper(Context context)
@@ -35,10 +38,11 @@ public class ActivityTrackerHelper
     /* ACTIVITY DETECTION API */
     public void requestActivityDetectionUpdates()
     {
-        //Set the activity detection interval. I’m using 3 seconds//
+        mActivityDetectIntent = getActivityDetectionPendingIntent();
+
         Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
-                10000, //10 seconds
-                getActivityDetectionPendingIntent());
+                10000, //10 seconds interval
+                mActivityDetectIntent);
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void result) {
@@ -56,16 +60,39 @@ public class ActivityTrackerHelper
 
     }
 
+    public void stopActivityDetectionUpdates()
+    {
+        Task<Void> task =
+                mActivityRecognitionClient.removeActivityTransitionUpdates(mActivityDetectIntent);
+
+        task.addOnSuccessListener(
+                new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        mActivityDetectIntent.cancel();
+                    }
+                });
+
+        task.addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("activityhelper", e.getMessage());
+                    }
+                });
+    }
+
+
     /*ACTIVITY TRANSITION API*/
     public void requestActivityTransitionUpdates()
     {
         ActivityTransitionRequest request = buildTransitionRequest();
 
         // Your pending intent to receive callbacks.
-        mPendingIntent = getActivityTransitionPendingIntent();
+        mActivityTransIntent = getActivityTransitionPendingIntent();
 
         Task task = mActivityRecognitionClient
-                .requestActivityTransitionUpdates(request, mPendingIntent);
+                .requestActivityTransitionUpdates(request, mActivityTransIntent);
         task.addOnSuccessListener(
                 new OnSuccessListener() {
                     @Override
@@ -86,14 +113,6 @@ public class ActivityTrackerHelper
     {
         List transitions = new ArrayList<>();
         transitions.add(new ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build());
-        transitions.add(new ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build());
-        transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.STILL)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build());
@@ -102,6 +121,22 @@ public class ActivityTrackerHelper
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build());
         transitions.add(new ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.IN_VEHICLE)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build());
+        transitions.add(new ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.IN_VEHICLE)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build());
+         /*transitions.add(new ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build());
+        transitions.add(new ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build());*/
+        /*transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.RUNNING)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build());
@@ -117,14 +152,7 @@ public class ActivityTrackerHelper
                 .setActivityType(DetectedActivity.ON_BICYCLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build());
-        transitions.add(new ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.IN_VEHICLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build());
-        transitions.add(new ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.IN_VEHICLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build());
+        */
         return new ActivityTransitionRequest(transitions);
     }
 
@@ -141,6 +169,29 @@ public class ActivityTrackerHelper
         return PendingIntent.getBroadcast(mContext, 200, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT); //Perform a broadcast
 
+    }
+
+    public void stopActivityTransitionUpdates()
+    {
+        Task<Void> task =
+                ActivityRecognition.getClient(mContext)
+                        .removeActivityTransitionUpdates(mActivityTransIntent);
+
+        task.addOnSuccessListener(
+                new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        mActivityTransIntent.cancel();
+                    }
+                });
+
+        task.addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("activityhelper", e.getMessage());
+                    }
+                });
     }
 
 }
