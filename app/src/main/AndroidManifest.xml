@@ -18,9 +18,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
-            android:name=".ActivityDetectionIntentService"
+            android:name=".activity_tracking.ActivityDetectionIntentService"
             android:exported="false" />
+
+        <receiver android:name="nanodegree.annekenl.walk360.activity_tracking.ActivityTransitionBroadcastReceiver"
+            android:exported="false"
+            android:permission="com.google.android.gms.permission.ACTIVITY_RECOGNITION">
+
+        </receiver>
+
     </application>
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 

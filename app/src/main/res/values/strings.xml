@@ -6,13 +6,16 @@
     <string name="title_healthy_snacks">Healthy Snacks</string>
     <string name="title_water_calc">Water Calculator</string>
 
-    <string name="percentage">%1$d%%</string>
     <string name="bicycle">On a bicycle</string>
     <string name="foot">On foot</string>
     <string name="running">Running</string>
     <string name="still">Still</string>
     <string name="tilting">Tilting</string>
-    <string name="unknown_activity">Unknown activity</string>
+    <string name="unknown_activity">Unknown Activity</string>
     <string name="vehicle">In a vehicle</string>
     <string name="walking">Walking</string>
+
+    <string name="activity_enter">Started</string>
+    <string name="activity_exit">Stopped</string>
+    <string name="activity_error">Undetermined</string>
 </resources>

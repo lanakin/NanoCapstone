@@ -1,4 +1,4 @@
-package nanodegree.annekenl.walk360;
+package nanodegree.annekenl.walk360.activity_tracking;
 
 // some code modified from tutorial instructions here:
 // https://www.androidauthority.com/using-the-activity-recognition-api-829339/
@@ -24,7 +24,7 @@ import java.util.Calendar;
 
 public class ActivityDetectionIntentService extends IntentService
 {
-    protected static final String TAG = "USER_ACTIVITY";
+    protected static final String TAG = "WALK360_USER_ACTIVITY";
 
     //Call the super IntentService constructor with the name for the worker thread
     public ActivityDetectionIntentService()
@@ -37,27 +37,10 @@ public class ActivityDetectionIntentService extends IntentService
         super.onCreate();
     }
 
-    //Define an onHandleIntent() method, which will be called
-    // whenever an activity detection update is available
-    // whenever an activity transition update is available
+    // onHandleIntent() method called whenever an activity detection update is available
     @Override
     protected void onHandleIntent(Intent intent)
     {
-        /*if (ActivityTransitionResult.hasResult(intent))
-        {
-            ActivityTransitionResult result = ActivityTransitionResult.extractResult(intent);
-
-            for (ActivityTransitionEvent event : result.getTransitionEvents())
-            {
-                PreferenceManager.getDefaultSharedPreferences(this)
-                        .edit()
-                        .putString(MainActivity.DETECTED_ACTIVITY,
-                            "" + event.getActivityType() + " " + event.getTransitionType() + " "
-                                    + Calendar.getInstance().getTime())
-                        .commit();
-            }
-        }*/
-
         //Check whether the Intent contains activity recognition data
         if (ActivityRecognitionResult.hasResult(intent))
         {
@@ -67,22 +50,9 @@ public class ActivityDetectionIntentService extends IntentService
             //Get an array of DetectedActivity objects
             ArrayList<DetectedActivity> detectedActivities = (ArrayList) result.getProbableActivities();
 
-            /*PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit()
-                    .putString(MainActivity.DETECTED_ACTIVITY,
-                            result.getMostProbableActivity().toString())
-                    .apply();*/
-
-             /*PreferenceManager.getDefaultSharedPreferences(this)
-                            .edit()
-                            .putString(MainActivity.DETECTED_ACTIVITY,
-                                    "" + currActivity.toString() + " "
-                                            + Calendar.getInstance().getTime())
-                            .commit();*/
-
             boolean determinedUserActivityLevel = false;
             boolean isMoving = false;
-            String test = "test";
+            String test = "no-activity";
 
             for (DetectedActivity currActivity : detectedActivities)
             {
@@ -94,7 +64,7 @@ public class ActivityDetectionIntentService extends IntentService
                         case DetectedActivity.ON_FOOT:
                         case DetectedActivity.RUNNING:
                         case DetectedActivity.WALKING:
-                            if (currActivity.getConfidence() >= 75) {
+                            if (currActivity.getConfidence() >= 65) {
                                 isMoving = true;
                                 determinedUserActivityLevel = true;
                                 test = currActivity.toString();
@@ -104,7 +74,7 @@ public class ActivityDetectionIntentService extends IntentService
                         case DetectedActivity.IN_VEHICLE:
                         default:
                             //IS NOT MOVING / SITTING
-                            if (currActivity.getConfidence() >= 75) {
+                            if (currActivity.getConfidence() >= 65) {
                                 isMoving = false;
                                 determinedUserActivityLevel = true;
                                 test = currActivity.toString();
@@ -122,7 +92,7 @@ public class ActivityDetectionIntentService extends IntentService
 
                 PreferenceManager.getDefaultSharedPreferences(this)
                         .edit()
-                        .putString(MainActivity.DETECTED_ACTIVITY, mJsonObj.toString())
+                        .putString(ActivityTrackerHelper.DETECTED_ACTIVITY, mJsonObj.toString())
                         .commit();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -130,14 +100,4 @@ public class ActivityDetectionIntentService extends IntentService
             return;
         }
     }
-
-
-    /*private long age_ms(long eventElapsedRealTimeNanos) {
-        return (SystemClock.elapsedRealtimeNanos() - eventElapsedRealTimeNanos) / 1000000;
-    }
-
-
-    public long age_minutes(ActivityTransitionEvent event) {
-        return age_ms(event.getElapsedRealTimeNanos() ) / (60*1000);
-    }*/
 }
