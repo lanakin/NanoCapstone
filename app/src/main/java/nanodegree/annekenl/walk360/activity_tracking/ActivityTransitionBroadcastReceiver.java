@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import nanodegree.annekenl.walk360.R;
+import nanodegree.annekenl.walk360.alarm_manager.AlarmManagerHelper;
 
 public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
 {
@@ -30,6 +31,8 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
     // <intent-filter>
     //    <action android:name="nanodegree.annekenl.walk360.TRANSITION_ACTION" />
     //</intent-filter>
+
+    private AlarmManagerHelper mAlarmManagerHelper;
 
     @Override
     public void onReceive(Context context, Intent intent) //called whenever an activity transition update is available
@@ -42,6 +45,7 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
             //}
 
             String transTest = "";
+            long stillStartTime = 0;
             List<ActivityTransitionEvent> transitionEvents = result.getTransitionEvents();
 
             if(transitionEvents.size() >= 1)
@@ -49,26 +53,40 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                 ActivityTransitionEvent mostRecentTransition
                         = transitionEvents.get(transitionEvents.size() - 1);
 
+                stillStartTime = System.currentTimeMillis();
+
+                //display test
                 transTest += activityTypeToString(context, mostRecentTransition.getActivityType())
                         + " " + activityTransitionTypeToString(context, mostRecentTransition.getTransitionType())
-                        + " " + Calendar.getInstance().getTime() + " ";
+                        + " " + stillStartTime
+                        + " " + Calendar.getInstance().getTime(); //display time
 
                 PreferenceManager.getDefaultSharedPreferences(context)
                         .edit()
                         .putString(ActivityTrackerHelper.DETECTED_ACTIVITY, transTest)
                         .commit();
 
-                if(mostRecentTransition.getActivityType() == DetectedActivity.STILL
-                        || mostRecentTransition.getTransitionType() == DetectedActivity.IN_VEHICLE) //currently dont have, might want to add
+                    //either of the ( STILL OR IN_VEHICLE (also sitting) ) registered transitions
+                if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 {
-                    if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                        //log time of stillness started
+                    //log time of stillness started
+                    PreferenceManager.getDefaultSharedPreferences(context)
+                            .edit()
+                            .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY, stillStartTime)
+                            .commit();
 
-                        //start alarm for reminder to move in 60 minutes
-                            //(alarm manager when it fires handles the start of regular activity
-                            //   updates if it determines that it's been >= 60 mins since user last
-                            //   went still / inactive).
-                    }
+                    //start alarm for reminder to move in 60 minutes
+                    mAlarmManagerHelper = new AlarmManagerHelper(context);
+                    mAlarmManagerHelper.setAlarm(2); //test 1 minute
+                }
+                else if( (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                        && mostRecentTransition.getActivityType() == DetectedActivity.STILL )
+                {
+                    //reset time of stillness started to 0
+                    PreferenceManager.getDefaultSharedPreferences(context)
+                            .edit()
+                            .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY, 0)
+                            .commit();
                 }
 
             }

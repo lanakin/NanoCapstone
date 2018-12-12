@@ -24,7 +24,9 @@ public class MainActivity extends AppCompatActivity
 {
     private Context mContext;
     private TextView mTestTV;
+
     private ActivityTrackerHelper mActivityTracker;
+    //private AlarmManagerHelper mAlarmManagerHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity
         mContext = this;
         mActivityTracker = new ActivityTrackerHelper(mContext);
         mActivityTracker.requestActivityTransitionUpdates(); //still started ..
+
+        /*mAlarmManagerHelper = new AlarmManagerHelper(mContext);
+        mAlarmManagerHelper.setAlarm(1); //test - show toast*/
     }
 
     @Override
@@ -76,6 +81,11 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
+
+
+
+    /* NAVIGATION */
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 

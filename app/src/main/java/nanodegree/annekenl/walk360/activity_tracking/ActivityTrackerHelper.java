@@ -20,6 +20,10 @@ import java.util.List;
 public class ActivityTrackerHelper
 {
     public static final String DETECTED_ACTIVITY = "DETECTED_ACTIVITY_360";
+    public static final String DETECTED_NON_ACTIVITY = "DETECTED_NON_ACTIVITY_360";
+
+    public static final long MAX_INACTIVE_TIME_MINUTES = 5; //2 minutes
+
     private ActivityRecognitionClient mActivityRecognitionClient;
 
     private PendingIntent mActivityTransIntent;
