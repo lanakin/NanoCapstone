@@ -11,7 +11,6 @@ package nanodegree.annekenl.walk360.activity_tracking;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 import com.google.android.gms.location.ActivityTransition;
@@ -22,7 +21,6 @@ import com.google.android.gms.location.DetectedActivity;
 import java.util.Calendar;
 import java.util.List;
 
-import nanodegree.annekenl.walk360.R;
 import nanodegree.annekenl.walk360.alarm_manager.AlarmManagerHelper;
 
 public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
@@ -56,8 +54,8 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                 stillStartTime = System.currentTimeMillis();
 
                 //display test
-                transTest += activityTypeToString(context, mostRecentTransition.getActivityType())
-                        + " " + activityTransitionTypeToString(context, mostRecentTransition.getTransitionType())
+                transTest += ActivityTrackerHelper.activityTypeToString(context, mostRecentTransition.getActivityType())
+                        + " " + ActivityTrackerHelper.activityTransitionTypeToString(context, mostRecentTransition.getTransitionType())
                         + " " + stillStartTime
                         + " " + Calendar.getInstance().getTime(); //display time
 
@@ -73,6 +71,7 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                     PreferenceManager.getDefaultSharedPreferences(context)
                             .edit()
                             .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY, stillStartTime)
+                            .putInt(ActivityTrackerHelper.ACTIVE_MIN_GOAL_PROGRESS, 0) //stop tracking active time
                             .commit();
 
                     //start alarm for reminder to move in 60 minutes
@@ -94,37 +93,4 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
         }
     }
 
-    static String activityTypeToString(Context context, int detectedActivityType) {
-        Resources resources = context.getResources();
-        switch(detectedActivityType) {
-            case DetectedActivity.ON_BICYCLE:
-                return resources.getString(R.string.bicycle);
-            case DetectedActivity.ON_FOOT:
-                return resources.getString(R.string.foot);
-            case DetectedActivity.RUNNING:
-                return resources.getString(R.string.running);
-            case DetectedActivity.STILL:
-                return resources.getString(R.string.still);
-            case DetectedActivity.WALKING:
-                return resources.getString(R.string.walking);
-            case DetectedActivity.IN_VEHICLE:
-                return resources.getString(R.string.vehicle);
-            case DetectedActivity.TILTING:
-                return resources.getString(R.string.tilting);
-            default:
-                return resources.getString(R.string.unknown_activity);
-        }
-    }
-
-    static String activityTransitionTypeToString(Context context, int detectedTransitionType) {
-        Resources resources = context.getResources();
-        switch(detectedTransitionType) {
-            case ActivityTransition.ACTIVITY_TRANSITION_ENTER:
-                return resources.getString(R.string.activity_enter);
-            case ActivityTransition.ACTIVITY_TRANSITION_EXIT:
-                return resources.getString(R.string.activity_exit);
-            default:
-                return resources.getString(R.string.activity_error);
-        }
-    }
 }

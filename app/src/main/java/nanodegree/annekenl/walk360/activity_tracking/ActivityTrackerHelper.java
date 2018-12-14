@@ -3,6 +3,7 @@ package nanodegree.annekenl.walk360.activity_tracking;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.google.android.gms.location.ActivityRecognition;
@@ -17,12 +18,16 @@ import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 
+import nanodegree.annekenl.walk360.R;
+
 public class ActivityTrackerHelper
 {
     public static final String DETECTED_ACTIVITY = "DETECTED_ACTIVITY_360";
-    public static final String DETECTED_NON_ACTIVITY = "DETECTED_NON_ACTIVITY_360";
+    public static final String ACTIVE_MIN_GOAL_PROGRESS = "DETECTED_ACTIVITY_PROGRESS_360";
+    public static final long ACTIVITY_DETECTION_INTERVAL = 20; //20 seconds
 
-    public static final long MAX_INACTIVE_TIME_MINUTES = 5; //2 minutes
+    public static final String DETECTED_NON_ACTIVITY = "DETECTED_NON_ACTIVITY_360";
+    public static final long MAX_INACTIVE_TIME_MINUTES = 5;
 
     private ActivityRecognitionClient mActivityRecognitionClient;
 
@@ -35,8 +40,6 @@ public class ActivityTrackerHelper
         mContext = context;
 
         mActivityRecognitionClient = new ActivityRecognitionClient(context);
-        requestActivityTransitionUpdates();
-        //requestActivityDetectionUpdates();
     }
 
     /* ACTIVITY DETECTION API */
@@ -45,7 +48,7 @@ public class ActivityTrackerHelper
         mActivityDetectIntent = getActivityDetectionPendingIntent();
 
         Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
-                10000, //10 seconds interval
+                ACTIVITY_DETECTION_INTERVAL * 1000, //periodic interval in milliseconds
                 mActivityDetectIntent);
         task.addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -67,13 +70,13 @@ public class ActivityTrackerHelper
     public void stopActivityDetectionUpdates()
     {
         Task<Void> task =
-                mActivityRecognitionClient.removeActivityTransitionUpdates(mActivityDetectIntent);
+                mActivityRecognitionClient.removeActivityUpdates(mActivityDetectIntent);
 
         task.addOnSuccessListener(
                 new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void result) {
-                        mActivityDetectIntent.cancel();
+                        //mActivityDetectIntent.cancel();
                     }
                 });
 
@@ -196,6 +199,41 @@ public class ActivityTrackerHelper
                         Log.e("activityhelper", e.getMessage());
                     }
                 });
+    }
+
+
+    static String activityTypeToString(Context context, int detectedActivityType) {
+        Resources resources = context.getResources();
+        switch(detectedActivityType) {
+            case DetectedActivity.ON_BICYCLE:
+                return resources.getString(R.string.bicycle);
+            case DetectedActivity.ON_FOOT:
+                return resources.getString(R.string.foot);
+            case DetectedActivity.RUNNING:
+                return resources.getString(R.string.running);
+            case DetectedActivity.STILL:
+                return resources.getString(R.string.still);
+            case DetectedActivity.WALKING:
+                return resources.getString(R.string.walking);
+            case DetectedActivity.IN_VEHICLE:
+                return resources.getString(R.string.vehicle);
+            case DetectedActivity.TILTING:
+                return resources.getString(R.string.tilting);
+            default:
+                return resources.getString(R.string.unknown_activity);
+        }
+    }
+
+    static String activityTransitionTypeToString(Context context, int detectedTransitionType) {
+        Resources resources = context.getResources();
+        switch(detectedTransitionType) {
+            case ActivityTransition.ACTIVITY_TRANSITION_ENTER:
+                return resources.getString(R.string.activity_enter);
+            case ActivityTransition.ACTIVITY_TRANSITION_EXIT:
+                return resources.getString(R.string.activity_exit);
+            default:
+                return resources.getString(R.string.activity_error);
+        }
     }
 
 }

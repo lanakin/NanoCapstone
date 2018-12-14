@@ -3,6 +3,7 @@
     package="nanodegree.annekenl.walk360">
 
     <application
+        android:name=".Walk360Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

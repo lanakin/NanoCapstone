@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
 
-// some activity recognition code modified from tutorial instructions here:
+// references:
 // https://www.androidauthority.com/using-the-activity-recognition-api-829339/
 // and google api example code:
 // https://developers.google.com/android/reference/com/google/android/gms/location
@@ -24,9 +24,6 @@ public class MainActivity extends AppCompatActivity
 {
     private Context mContext;
     private TextView mTestTV;
-
-    private ActivityTrackerHelper mActivityTracker;
-    //private AlarmManagerHelper mAlarmManagerHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,17 +37,13 @@ public class MainActivity extends AppCompatActivity
         navigation.setSelectedItemId(R.id.navigation_home);
 
         mContext = this;
-        mActivityTracker = new ActivityTrackerHelper(mContext);
-        mActivityTracker.requestActivityTransitionUpdates(); //still started ..
-
-        /*mAlarmManagerHelper = new AlarmManagerHelper(mContext);
-        mAlarmManagerHelper.setAlarm(1); //test - show toast*/
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        PreferenceManager.getDefaultSharedPreferences(this)
+        PreferenceManager.getDefaultSharedPreferences(mContext)
                 .registerOnSharedPreferenceChangeListener(this);
         updateTestTV();
     }
@@ -58,7 +51,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-        PreferenceManager.getDefaultSharedPreferences(this)
+        PreferenceManager.getDefaultSharedPreferences(mContext)
                 .unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
@@ -79,10 +72,6 @@ public class MainActivity extends AppCompatActivity
             updateTestTV();
         }
     }
-
-
-
-
 
 
     /* NAVIGATION */
