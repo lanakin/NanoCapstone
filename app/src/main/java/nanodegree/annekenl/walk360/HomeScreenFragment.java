@@ -1,8 +1,10 @@
 package nanodegree.annekenl.walk360;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -10,6 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Chronometer;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 
 import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
 import nanodegree.annekenl.walk360.alarm_manager.AlarmManagerHelper;
@@ -18,6 +26,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 {
     private Context mContext;
     private Chronometer mChronometer;
+    private TextView mDate;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -42,7 +51,30 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         mChronometer = (Chronometer) rootView.findViewById(R.id.simpleChronometer); // initiate a chronometer
 
+        mDate = rootView.findViewById(R.id.homeDateTV);
+
         return rootView;
+    }
+
+    @TargetApi(26)
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        String today = "";
+
+
+        if(VERSION.SDK_INT <= 25) {
+           Calendar calendarDate = Calendar.getInstance();
+           SimpleDateFormat formatter = new SimpleDateFormat("MM dd, yyyy");
+           today += formatter.format(calendarDate);
+        } else {
+            LocalDate localDate = LocalDate.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
+            today += localDate.format(formatter);
+        }
+        mDate.setText(today);
     }
 
     @Override
@@ -74,8 +106,8 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         if(startTime!=0)
         {
-            startTime = AlarmManagerHelper.nanosecondsToMilliseconds(startTime); //activity transition event time result is in real-time nanoseconds*
-            mChronometer.setBase(startTime);
+            long currTime = AlarmManagerHelper.nanosecondsToMilliseconds(startTime); //activity transition event time result is in real-time nanoseconds*
+            mChronometer.setBase(currTime);
             mChronometer.start(); // start a chronometer
         }
 

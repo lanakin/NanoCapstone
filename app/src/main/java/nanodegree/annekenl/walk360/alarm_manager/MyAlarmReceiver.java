@@ -22,7 +22,7 @@ public class MyAlarmReceiver extends BroadcastReceiver
 
         if(startTime != 0)
         {
-            long inactiveTime = AlarmManagerHelper.elapsedRealTimeMillisInMinutes(startTime);
+            long inactiveTime = AlarmManagerHelper.elapsedWallTimeMillisInMinutes(startTime);
 
             if(inactiveTime >= ActivityTrackerHelper.MAX_INACTIVE_TIME_MINUTES)
             {
@@ -30,9 +30,9 @@ public class MyAlarmReceiver extends BroadcastReceiver
                         Toast.LENGTH_LONG).show();
 
                 //idea to switch to activity detection here for short (20 seconds) intervals
-               /* try {
+                /*try {
                     Walk360Application mApplication = (Walk360Application) context.getApplicationContext();
-                    mApplication.getmActivityTracker().requestActivityDetectionUpdates();
+                    mApplication.getmActivityTracker().requestActivityDetectionUpdates(ActivityTrackerHelper.ACTIVITY_DETECTION_INTERVAL);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }*/

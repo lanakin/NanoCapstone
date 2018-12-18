@@ -19,6 +19,7 @@ import com.google.android.gms.location.ActivityTransitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.util.Calendar;
+import java.util.List;
 
 import nanodegree.annekenl.walk360.alarm_manager.AlarmManagerHelper;
 
@@ -45,16 +46,23 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
             boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
                     .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
 
-            for (ActivityTransitionEvent event : result.getTransitionEvents())
+            //for (ActivityTransitionEvent event : result.getTransitionEvents())
+           // { // chronological sequence of events....
+
+            List<ActivityTransitionEvent> transitionEvents = result.getTransitionEvents();
+
+            if(transitionEvents.size() >= 1)
             {
-                // chronological sequence of events....
+                ActivityTransitionEvent mostRecentTransition
+                        = transitionEvents.get(transitionEvents.size() - 1);
+
                 stillStartTime = System.currentTimeMillis();  //wall time
 
-                transitionTimeNanos = event.getElapsedRealTimeNanos();
+                transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track start of last event for active or inactive time
 
                 //display test
-                transTest += ActivityTrackerHelper.activityTypeToString(mContext, event.getActivityType())
-                        + " " + ActivityTrackerHelper.activityTransitionTypeToString(mContext, event.getTransitionType())
+                transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
+                        + " " + ActivityTrackerHelper.activityTransitionTypeToString(mContext, mostRecentTransition.getTransitionType())
                         //+ " " + stillStartTime
                         + " " + Calendar.getInstance().getTime() //display time
                         + "\n";
@@ -64,9 +72,10 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                         .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, transTest)
                         .commit();
 
-                switch (event.getActivityType())
+                switch (mostRecentTransition.getActivityType())
                 {
-                    case DetectedActivity.ON_BICYCLE:
+                    //in testing, "less is more" it seems, to keep it simple and accurate for this app's goal
+                  /*  case DetectedActivity.ON_BICYCLE:
                     case DetectedActivity.RUNNING:
                     case DetectedActivity.WALKING:
                         if (event.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER
@@ -74,20 +83,20 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                         {
                             handleUserIsActive();
                         }
-                        break;
+                        break;*/
                     case DetectedActivity.STILL:
-                        if (event.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT
+                        if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT
                                 && !isActive)  //only reset time if transition event away from inactivity
                         {
                             handleUserIsActive();
                         }
-                        else if(event.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER
+                        else if(mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER
                                 && isActive) //only reset time if transition event away from activity
                         {
                             handleUserIsInactive();
                         }
                     case DetectedActivity.IN_VEHICLE:
-                        if (event.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER
+                        if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER
                                 && isActive)  //only reset time if transition event away from activity
                         {
                             handleUserIsInactive();
@@ -95,62 +104,6 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                         break;
                 }
             }
-
-            /*String transTest = "";
-            long stillStartTime = 0;
-            long transitionTimeNanos = 0;*/
-            //List<ActivityTransitionEvent> transitionEvents = result.getTransitionEvents();
-
-            //if(transitionEvents.size() >= 1)
-            //{
-                //ActivityTransitionEvent mostRecentTransition
-                        //= transitionEvents.get(transitionEvents.size() - 1);
-
-             /*   stillStartTime = System.currentTimeMillis();  //wall time
-
-                transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos();
-
-                //display test
-                transTest += ActivityTrackerHelper.activityTypeToString(context, mostRecentTransition.getActivityType())
-                        + " " + ActivityTrackerHelper.activityTransitionTypeToString(context, mostRecentTransition.getTransitionType())
-                        //+ " " + stillStartTime
-                        + " " + Calendar.getInstance().getTime(); //display time
-
-                PreferenceManager.getDefaultSharedPreferences(context)
-                        .edit()
-                        .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, transTest)
-                        .commit();
-
-                    //either of the ( STILL OR IN_VEHICLE (also sitting) ) registered transitions
-                if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                {
-                    //log time of stillness started
-                    PreferenceManager.getDefaultSharedPreferences(context)
-                            .edit()
-                            .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, stillStartTime)  //used to determine time in minutes
-                            .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos)
-                            .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false)
-                            //.putInt(ActivityTrackerHelper.ACTIVE_MIN_GOAL_PROGRESS, 0) //stop tracking active time
-                            .commit();
-
-                    //start alarm for reminder to move in 60 minutes
-                    mAlarmManagerHelper = new AlarmManagerHelper(context);
-                    mAlarmManagerHelper.setAlarm(2); //test 1 minute
-                }
-                else if( (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                        && mostRecentTransition.getActivityType() == DetectedActivity.STILL )
-                {
-                    //reset time of stillness started to 0
-                    PreferenceManager.getDefaultSharedPreferences(context)
-                            .edit()
-                            .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, 0)
-                            .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos)
-                            .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, true)
-                            .commit();
-                }*/
-
-            //}
-
         }
     }
 

@@ -45,7 +45,7 @@ public class AlarmManagerHelper
         return nanoseconds / 1000000;
     }
 
-    public static long elapsedRealTimeMillisInMinutes(long startMillis)
+    public static long elapsedWallTimeMillisInMinutes(long startMillis)
     {
         long elapsedTime = System.currentTimeMillis() - startMillis;
 

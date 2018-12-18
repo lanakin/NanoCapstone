@@ -22,20 +22,15 @@ import nanodegree.annekenl.walk360.R;
 
 public class ActivityTrackerHelper
 {
-    public static final String DETECTED_ACTIVITY_KEY = "DETECTED_ACTIVITY_360";  //test string~
+    public static final String DETECTED_ACTIVITY_KEY = "DETECTED_ACTIVITY_360";  //test string
 
-    //public static final String ACTIVE_MIN_GOAL_PROGRESS = "DETECTED_ACTIVITY_PROGRESS_360";
-    //public static final long ACTIVITY_DETECTION_INTERVAL = 20; //20 seconds
-
-    public static final String DETECTED_NON_ACTIVITY_KEY = "DETECTED_NON_ACTIVITY_360"; //still start time~
+    public static final String DETECTED_NON_ACTIVITY_KEY = "DETECTED_NON_ACTIVITY_360"; //still start time
     public static final long MAX_INACTIVE_TIME_MINUTES = 5;
 
-    public static final String CHRONOMETER_EVENT_START_KEY = "WALK_360_EVENT_START"; //stored transition start time
-
+    public static final String CHRONOMETER_EVENT_START_KEY = "WALK_360_EVENT_START"; //transition start time (active or inactive)
     public static final String IS_ACTIVE_KEY = "WALK_360_ISACTIVE";
 
     private ActivityRecognitionClient mActivityRecognitionClient;
-
     private PendingIntent mActivityTransIntent;
     private PendingIntent mActivityDetectIntent;
     private Context mContext;
@@ -89,7 +84,8 @@ public class ActivityTrackerHelper
                 .setActivityType(DetectedActivity.STILL)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build());
-        transitions.add(new ActivityTransition.Builder()
+        //in testing, "less is more" it seems, to keep it simple and accurate for this app's goal
+        /*transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.WALKING)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build());
@@ -100,7 +96,7 @@ public class ActivityTrackerHelper
         transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.ON_BICYCLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build());
+                .build());*/
 
         return new ActivityTransitionRequest(transitions);
     }

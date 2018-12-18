@@ -22,6 +22,9 @@ public class ActivityDetectionIntentService extends IntentService
 {
     protected static final String TAG = "WALK360_USER_ACTIVITY";
 
+    //public static final String ACTIVE_MIN_GOAL_PROGRESS = "DETECTED_ACTIVITY_PROGRESS_360";
+    //public static final int ACTIVITY_DETECTION_INTERVAL = 20; //20 seconds
+
     private ActivityTrackerHelper mActivityTracker;
 
     //Call the super IntentService constructor with the name for the worker thread
@@ -83,8 +86,8 @@ public class ActivityDetectionIntentService extends IntentService
             } //check list of probable activities
 
 
-            //part of a strategy to use activity detection to make sure user was moving for 3 minutes
-           /* try
+            //part of an idea to use activity detection to make sure a user was moving for 3 minutes
+           /*try
             {
                 int activeTime = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                         .getInt(ActivityTrackerHelper.ACTIVE_MIN_GOAL_PROGRESS, 0);
@@ -100,6 +103,7 @@ public class ActivityDetectionIntentService extends IntentService
                             .putInt(ActivityTrackerHelper.ACTIVE_MIN_GOAL_PROGRESS, activeTime)
                             .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, test + " "
                                     + Calendar.getInstance().getTime() + " " + activeTime)  //UI TEST
+                            .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY,true)
                             .commit();
                 }
                 else if(activeTime >= 180) //stop active updates
@@ -107,7 +111,7 @@ public class ActivityDetectionIntentService extends IntentService
                     //Toast.makeText(this, "Good job! You have been active for at least 3 minutes.",
                             //Toast.LENGTH_LONG).show();
 
-                    *//**START WAITING FOR TRANSITION BACK TO "STILL"**//*
+                    //START WAITING FOR TRANSITION BACK TO "STILL"//
 
                     //mActivityTracker = new ActivityTrackerHelper(getApplicationContext());
 
@@ -129,8 +133,7 @@ public class ActivityDetectionIntentService extends IntentService
             }
             catch (Exception e) {
                 e.printStackTrace();
-            }
-*/
+            }*/
         }
     }
 }
