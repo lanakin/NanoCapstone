@@ -27,13 +27,15 @@
     <TextView
         android:id="@+id/testTV"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="76dp"
         android:layout_marginEnd="8dp"
         tools:text = "Test"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/screen_fragment" />
+        app:layout_constraintTop_toBottomOf="@+id/screen_fragment"
+        android:padding="10dp"
+        />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"

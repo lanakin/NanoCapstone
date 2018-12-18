@@ -22,12 +22,17 @@ import nanodegree.annekenl.walk360.R;
 
 public class ActivityTrackerHelper
 {
-    public static final String DETECTED_ACTIVITY = "DETECTED_ACTIVITY_360";
-    public static final String ACTIVE_MIN_GOAL_PROGRESS = "DETECTED_ACTIVITY_PROGRESS_360";
-    public static final long ACTIVITY_DETECTION_INTERVAL = 20; //20 seconds
+    public static final String DETECTED_ACTIVITY_KEY = "DETECTED_ACTIVITY_360";  //test string~
 
-    public static final String DETECTED_NON_ACTIVITY = "DETECTED_NON_ACTIVITY_360";
+    //public static final String ACTIVE_MIN_GOAL_PROGRESS = "DETECTED_ACTIVITY_PROGRESS_360";
+    //public static final long ACTIVITY_DETECTION_INTERVAL = 20; //20 seconds
+
+    public static final String DETECTED_NON_ACTIVITY_KEY = "DETECTED_NON_ACTIVITY_360"; //still start time~
     public static final long MAX_INACTIVE_TIME_MINUTES = 5;
+
+    public static final String CHRONOMETER_EVENT_START_KEY = "WALK_360_EVENT_START"; //stored transition start time
+
+    public static final String IS_ACTIVE_KEY = "WALK_360_ISACTIVE";
 
     private ActivityRecognitionClient mActivityRecognitionClient;
 
@@ -40,53 +45,6 @@ public class ActivityTrackerHelper
         mContext = context;
 
         mActivityRecognitionClient = new ActivityRecognitionClient(context);
-    }
-
-    /* ACTIVITY DETECTION API */
-    public void requestActivityDetectionUpdates()
-    {
-        mActivityDetectIntent = getActivityDetectionPendingIntent();
-
-        Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
-                ACTIVITY_DETECTION_INTERVAL * 1000, //periodic interval in milliseconds
-                mActivityDetectIntent);
-        task.addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void result) {
-                Log.d("activityhelper","detection successfully started");
-            }
-        });
-    }
-
-    private PendingIntent getActivityDetectionPendingIntent()
-    {
-        Intent intent = new Intent(mContext, ActivityDetectionIntentService.class);
-
-        return PendingIntent.getService(mContext, 100, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT); //Starts IntentService class
-
-    }
-
-    public void stopActivityDetectionUpdates()
-    {
-        Task<Void> task =
-                mActivityRecognitionClient.removeActivityUpdates(mActivityDetectIntent);
-
-        task.addOnSuccessListener(
-                new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void result) {
-                        //mActivityDetectIntent.cancel();
-                    }
-                });
-
-        task.addOnFailureListener(
-                new OnFailureListener() {
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.e("activityhelper", e.getMessage());
-                    }
-                });
     }
 
 
@@ -124,42 +82,26 @@ public class ActivityTrackerHelper
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build());
         transitions.add(new ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.IN_VEHICLE)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build());
+        transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.STILL)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build());
         transitions.add(new ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.IN_VEHICLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build());
-        transitions.add(new ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.IN_VEHICLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build());
-         /*transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.WALKING)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build());
         transitions.add(new ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build());*/
-        /*transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.RUNNING)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build());
-        transitions.add(new ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.RUNNING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build());
         transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.ON_BICYCLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build());
-        transitions.add(new ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.ON_BICYCLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build());
-        */
+
         return new ActivityTransitionRequest(transitions);
     }
 
@@ -188,7 +130,57 @@ public class ActivityTrackerHelper
                 new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void result) {
-                        mActivityTransIntent.cancel();
+                        //mActivityTransIntent.cancel();
+                        Log.d("activtytrans","stopped");
+                    }
+                });
+
+        task.addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e("activityhelper", e.getMessage());
+                    }
+                });
+    }
+
+
+    /* ACTIVITY DETECTION API */
+    public void requestActivityDetectionUpdates(int interval)
+    {
+        mActivityDetectIntent = getActivityDetectionPendingIntent();
+
+        Task<Void> task = mActivityRecognitionClient.requestActivityUpdates(
+                interval * 1000, //periodic interval in milliseconds
+                mActivityDetectIntent);
+        task.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                Log.d("activityhelper","detection successfully started");
+            }
+        });
+    }
+
+    private PendingIntent getActivityDetectionPendingIntent()
+    {
+        Intent intent = new Intent(mContext, ActivityDetectionIntentService.class);
+
+        return PendingIntent.getService(mContext, 100, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT); //Starts IntentService class
+
+    }
+
+    public void stopActivityDetectionUpdates()
+    {
+        Task<Void> task =
+                mActivityRecognitionClient.removeActivityUpdates(mActivityDetectIntent);
+
+        task.addOnSuccessListener(
+                new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void result) {
+                        //mActivityDetectIntent.cancel();
+                        Log.d("activtydetect","stopped");
                     }
                 });
 
@@ -235,5 +227,6 @@ public class ActivityTrackerHelper
                 return resources.getString(R.string.activity_error);
         }
     }
+
 
 }

@@ -19,7 +19,8 @@
     <string name="activity_exit">Stopped</string>
     <string name="activity_error">Undetermined</string>
 
-    <string name="last_walked_string">minutes since walked last</string>
+    <string name="inactive_time">Inactive Time</string>
+    <string name="active_time">Active Time</string>
     <string name="inactivity_alert">Get Moving!</string>
     <string name="activity_goal_started">Keep Going!</string>
     <string name="activity_goal_finished">Good Job!</string>

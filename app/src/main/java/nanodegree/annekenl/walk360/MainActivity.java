@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     protected void updateTestTV() {
         String temp =
                 PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getString(ActivityTrackerHelper.DETECTED_ACTIVITY, "");
+                        .getString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, "");
 
         mTestTV.setText(temp);
     }
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s)
     {
-        if (s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY)) {
+        if (s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
             updateTestTV();
         }
     }

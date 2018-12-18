@@ -12,15 +12,11 @@ package nanodegree.annekenl.walk360.activity_tracking;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.preference.PreferenceManager;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-
-import nanodegree.annekenl.walk360.Walk360Application;
 
 public class ActivityDetectionIntentService extends IntentService
 {
@@ -86,7 +82,9 @@ public class ActivityDetectionIntentService extends IntentService
                 }
             } //check list of probable activities
 
-            try
+
+            //part of a strategy to use activity detection to make sure user was moving for 3 minutes
+           /* try
             {
                 int activeTime = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                         .getInt(ActivityTrackerHelper.ACTIVE_MIN_GOAL_PROGRESS, 0);
@@ -100,7 +98,7 @@ public class ActivityDetectionIntentService extends IntentService
                     PreferenceManager.getDefaultSharedPreferences(this)
                             .edit()
                             .putInt(ActivityTrackerHelper.ACTIVE_MIN_GOAL_PROGRESS, activeTime)
-                            .putString(ActivityTrackerHelper.DETECTED_ACTIVITY, test + " "
+                            .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, test + " "
                                     + Calendar.getInstance().getTime() + " " + activeTime)  //UI TEST
                             .commit();
                 }
@@ -109,7 +107,7 @@ public class ActivityDetectionIntentService extends IntentService
                     //Toast.makeText(this, "Good job! You have been active for at least 3 minutes.",
                             //Toast.LENGTH_LONG).show();
 
-                    /**START WAITING FOR TRANSITION BACK TO "STILL"**/
+                    *//**START WAITING FOR TRANSITION BACK TO "STILL"**//*
 
                     //mActivityTracker = new ActivityTrackerHelper(getApplicationContext());
 
@@ -123,7 +121,7 @@ public class ActivityDetectionIntentService extends IntentService
                     //UPDATE PROGRESS BAR TO FULL? NEED ONE LAST UI UPDATE UNTIL GO BACK TO "STILLNESS"
                     PreferenceManager.getDefaultSharedPreferences(this)
                             .edit()
-                            .putString(ActivityTrackerHelper.DETECTED_ACTIVITY, test
+                            .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, test
                                         + " " + Calendar.getInstance().getTime() + " " + activeTime)  //UI TEST
                             .commit();
 
@@ -132,7 +130,7 @@ public class ActivityDetectionIntentService extends IntentService
             catch (Exception e) {
                 e.printStackTrace();
             }
-            return;
+*/
         }
     }
 }

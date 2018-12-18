@@ -40,6 +40,11 @@ public class AlarmManagerHelper
                 Toast.LENGTH_LONG).show();
     }
 
+
+    public static long nanosecondsToMilliseconds(long nanoseconds) {
+        return nanoseconds / 1000000;
+    }
+
     public static long elapsedRealTimeMillisInMinutes(long startMillis)
     {
         long elapsedTime = System.currentTimeMillis() - startMillis;
@@ -47,10 +52,4 @@ public class AlarmManagerHelper
         return elapsedTime / minuteInMilliseconds;
     }
 
-    public static long timeDiffMillisInMinutes(long startMillis, long endMillis)
-    {
-        long timeDiff = endMillis - startMillis;
-
-        return timeDiff / minuteInMilliseconds;
-    }
 }

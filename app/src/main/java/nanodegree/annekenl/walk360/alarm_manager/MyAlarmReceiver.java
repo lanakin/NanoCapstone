@@ -7,7 +7,6 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-import nanodegree.annekenl.walk360.Walk360Application;
 import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
 
 public class MyAlarmReceiver extends BroadcastReceiver
@@ -19,7 +18,7 @@ public class MyAlarmReceiver extends BroadcastReceiver
     public void onReceive(Context context, Intent intent)
     {
         long startTime = PreferenceManager.getDefaultSharedPreferences(context)
-                    .getLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY, 0);
+                    .getLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, 0);
 
         if(startTime != 0)
         {
@@ -30,17 +29,13 @@ public class MyAlarmReceiver extends BroadcastReceiver
                 Toast.makeText(context, "Sitting for " + inactiveTime + " minutes. GET MOVING",
                         Toast.LENGTH_LONG).show();
 
-                //START CLOSELY TRACKING WALKING ACTIVITY
-                //mActivityTracker = new ActivityTrackerHelper(context);
-
-                //mActivityTracker.stopActivityTransitionUpdates(); //maybe only worry about stopping this at indicated time in settings?
-
-                try {
+                //idea to switch to activity detection here for short (20 seconds) intervals
+               /* try {
                     Walk360Application mApplication = (Walk360Application) context.getApplicationContext();
                     mApplication.getmActivityTracker().requestActivityDetectionUpdates();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
             }
             else
             {
