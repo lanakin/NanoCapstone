@@ -1,17 +1,13 @@
 package nanodegree.annekenl.walk360;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
+import nanodegree.annekenl.walk360.settings.SettingsScreenFragment;
 
 // references:
 // https://www.androidauthority.com/using-the-activity-recognition-api-829339/
@@ -20,59 +16,27 @@ import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
 // /ActivityRecognitionClient
 
 public class MainActivity extends AppCompatActivity
-        implements SharedPreferences.OnSharedPreferenceChangeListener
 {
-    private Context mContext;
-    private TextView mTestTV;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTestTV = findViewById(R.id.testTV);
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
-
-        mContext = this;
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
-        PreferenceManager.getDefaultSharedPreferences(mContext)
-                .registerOnSharedPreferenceChangeListener(this);
-        updateTestTV();
     }
-
 
     @Override
     protected void onPause() {
-        PreferenceManager.getDefaultSharedPreferences(mContext)
-                .unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
-
-
-    protected void updateTestTV() {
-        String temp =
-                PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, "");
-
-        mTestTV.setText(temp);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s)
-    {
-        if (s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
-            updateTestTV();
-        }
-    }
-
 
     /* NAVIGATION */
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener

@@ -8,6 +8,7 @@ import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     private Context mContext;
     private Chronometer mChronometer;
     private TextView mDate;
+    private TextView homeTV;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -53,6 +55,8 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         mDate = rootView.findViewById(R.id.homeDateTV);
 
+        homeTV = rootView.findViewById(R.id.homeScreenTV);
+
         return rootView;
     }
 
@@ -62,9 +66,9 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     {
         super.onViewCreated(view, savedInstanceState);
 
+        updateChronometer();
+
         String today = "";
-
-
         if(VERSION.SDK_INT <= 25) {
            Calendar calendarDate = Calendar.getInstance();
            SimpleDateFormat formatter = new SimpleDateFormat("MM dd, yyyy");
@@ -84,6 +88,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         PreferenceManager.getDefaultSharedPreferences(mContext)
                 .registerOnSharedPreferenceChangeListener(this);
         updateChronometer();
+        updateTestTV();
     }
 
 
@@ -94,9 +99,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         super.onPause();
     }
 
-
     protected void updateChronometer()
-
     {
         boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
                 .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
@@ -104,23 +107,33 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         long startTime = PreferenceManager.getDefaultSharedPreferences(mContext)
                 .getLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, 0);
 
-        if(startTime!=0)
+        mChronometer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+
+        if (startTime != 0)
         {
             long currTime = AlarmManagerHelper.nanosecondsToMilliseconds(startTime); //activity transition event time result is in real-time nanoseconds*
             mChronometer.setBase(currTime);
+
+            if (isActive) {
+                String chronoFormat = "%s" + " " + getResources().getString(R.string.active_time);
+                mChronometer.setFormat(chronoFormat);
+                mChronometer.setTextColor(Color.GREEN);
+            } else {
+                String chronoFormat = "%s " + " " + getResources().getString(R.string.inactive_time);
+                mChronometer.setFormat(chronoFormat);
+                mChronometer.setTextColor(Color.RED);
+            }
+
             mChronometer.start(); // start a chronometer
         }
+    }
 
-        if(isActive) {
-            mChronometer.setTextColor(Color.GREEN);
-            mChronometer.setFormat("%s" + " " + getResources().getString(R.string.active_time)); // set the format for a chronometer
-        }
-        else {
-            mChronometer.setTextColor(Color.RED);
-            mChronometer.setFormat("%s" + " " + getResources().getString(R.string.inactive_time)); // set the format for a chronometer
-        }
-
-        //mChronometer.start(); // start a chronometer
+    private void updateTestTV()
+    {
+        String temp =
+                PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .getString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, "");
+        homeTV.setText(temp);
     }
 
     @Override
@@ -128,6 +141,9 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     {
         if (s.equals(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY)) {
             updateChronometer();
+        }
+        else if(s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
+            updateTestTV();
         }
     }
 

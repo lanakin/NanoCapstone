@@ -63,7 +63,6 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                 //display test
                 transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
                         + " " + ActivityTrackerHelper.activityTransitionTypeToString(mContext, mostRecentTransition.getTransitionType())
-                        //+ " " + stillStartTime
                         + " " + Calendar.getInstance().getTime() //display time
                         + "\n";
 
@@ -85,23 +84,24 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                         }
                         break;*/
                     case DetectedActivity.STILL:
-                        if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT
-                                && !isActive)  //only reset time if transition event away from inactivity
+                        if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                               // && !isActive)  //only reset time if transition event away from inactivity
                         {
                             handleUserIsActive();
                         }
-                        else if(mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER
-                                && isActive) //only reset time if transition event away from activity
-                        {
-                            handleUserIsInactive();
-                        }
-                    case DetectedActivity.IN_VEHICLE:
-                        if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER
-                                && isActive)  //only reset time if transition event away from activity
+                        else if(mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                                //&& isActive) //only reset time if transition event away from activity
                         {
                             handleUserIsInactive();
                         }
                         break;
+                   /* case DetectedActivity.IN_VEHICLE:
+                        if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                               // && isActive)  //only reset time if transition event away from activity
+                        {
+                            handleUserIsInactive();
+                        }
+                        break;*/
                 }
             }
         }

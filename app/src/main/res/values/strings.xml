@@ -26,7 +26,7 @@
     <string name="activity_goal_finished">Good Job!</string>
 
 
-    <string name="jan">January</string>
+  <!--  <string name="jan">January</string>
     <string name="feb">February</string>
     <string name="mar">March</string>
     <string name="apr">April</string>
@@ -37,5 +37,43 @@
     <string name="sep">September</string>
     <string name="oct">October</string>
     <string name="nov">November</string>
-    <string name="dec">December</string>
+    <string name="dec">December</string>-->
+
+    <string name="push_notifications">Walking Reminders</string>
+    <string name="push_notifications_summary">Receive Push Notifications</string>
+
+    <string name="choose_days">Choose Days To Get Walking Reminders On</string>
+    <string name="days_title">Reminder Days</string>
+    <string name="sun">Sunday</string>
+    <string name="mon">Monday</string>
+    <string name="tue">Tuesday</string>
+    <string name="wed">Wednesday</string>
+    <string name="thur">Thursday</string>
+    <string name="fri">Friday</string>
+    <string name="sat">Saturday</string>
+
+    <string-array name="daysKeys">
+        <item>@string/sun</item>
+        <item>@string/mon</item>
+        <item>@string/tue</item>
+        <item>@string/wed</item>
+        <item>@string/thur</item>
+        <item>@string/fri</item>
+        <item>@string/sat</item>
+    </string-array>
+
+    <string-array name="daysValues">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+
+    <string name="set">Set</string>
+    <string name="cancel">Cancel</string>
+
+
 </resources>

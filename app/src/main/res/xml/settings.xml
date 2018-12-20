@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <SwitchPreferenceCompat
+        android:key="reminders_switch_walk360_key"
+        android:title="@string/push_notifications"
+        android:summary="@string/push_notifications_summary"
+        android:defaultValue="true" />
+
+    <MultiSelectListPreference
+        android:dialogTitle="@string/choose_days"
+        android:entries="@array/daysKeys"
+        android:entryValues="@array/daysValues"
+        android:key="days_walk360_key"
+        android:title="@string/days_title"
+        android:summary="@string/choose_days"
+        />
+
+    <nanodegree.annekenl.walk360.settings.TimePreference
+        android:key="some_time"
+        android:title="Set some time"
+        android:defaultValue="12:00"
+        android:summary="Set some time"/>
+
+
+</PreferenceScreen>
