@@ -39,9 +39,11 @@
     <string name="nov">November</string>
     <string name="dec">December</string>-->
 
+    <string name="reminders_switch_walk360_key">reminders_switch_walk360_key</string>
     <string name="push_notifications">Walking Reminders</string>
     <string name="push_notifications_summary">Receive Push Notifications</string>
 
+    <string name="days_walk360_key">days_walk360_key</string>
     <string name="choose_days">Choose Days To Get Walking Reminders On</string>
     <string name="days_title">Reminder Days</string>
     <string name="sun">Sunday</string>
@@ -72,6 +74,8 @@
         <item>7</item>
     </string-array>
 
+    <string name="start_time_walk360_key">start_time_walk360_key</string>
+    <string name="end_time_walk360_key">end_time_walk360_key</string>
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
     <string name="choose_start_time">Choose When To Start Walking Reminders each day</string>

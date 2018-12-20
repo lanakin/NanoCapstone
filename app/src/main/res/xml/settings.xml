@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <SwitchPreferenceCompat
-        android:key="reminders_switch_walk360_key"
+        android:key="@string/reminders_switch_walk360_key"
         android:title="@string/push_notifications"
         android:summary="@string/push_notifications_summary"
         android:defaultValue="true" />
@@ -12,13 +12,13 @@
         android:dialogTitle="@string/choose_days"
         android:entries="@array/daysKeys"
         android:entryValues="@array/daysValues"
-        android:key="days_walk360_key"
+        android:key="@string/days_walk360_key"
         android:title="@string/days_title"
         android:summary="@string/choose_days"
         />
 
     <nanodegree.annekenl.walk360.settings.TimePreference
-        android:key="start_time_walk360_key"
+        android:key="@string/start_time_walk360_key"
         android:title="@string/start_time_title"
         android:defaultValue="9:00"
         android:summary="@string/choose_start_time"/>
