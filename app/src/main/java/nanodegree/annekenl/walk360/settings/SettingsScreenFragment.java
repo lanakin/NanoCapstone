@@ -19,19 +19,9 @@ public class SettingsScreenFragment extends PreferenceFragmentCompat implements
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
-    /*@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
-        View rootView = inflater.inflate(R.layout.settings_screen_layout, container, false);
-
-        return rootView;
-    }*/
 
 
     @Override
@@ -57,6 +47,7 @@ public class SettingsScreenFragment extends PreferenceFragmentCompat implements
             dialogFragment.setArguments(bundle);
         }
 
+        // If it was the custom Preferences, show its dialog
         if (dialogFragment != null)
         {
             dialogFragment.setTargetFragment(this, 0);

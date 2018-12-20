@@ -11,8 +11,8 @@ import android.util.AttributeSet;
 //solution - Dalija Prasnikar
 public class TimePreference extends DialogPreference
 {
-    public int hour = 0;
-    public int minute = 0;
+    protected int hour = 0;
+    protected int minute = 0;
 
     public TimePreference(Context context, AttributeSet attrs)
     {
@@ -22,16 +22,27 @@ public class TimePreference extends DialogPreference
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index)
     {
+        // Default value from attribute.
         return a.getString(index);
     }
 
+    /* Implement this to set the initial value of the Preference.
+     * If restorePersistedValue is true, you should restore the Preference value from the SharedPreferences.
+     * If restorePersistedValue is false, you should set the Preference value to defaultValue that is given
+     * (and possibly store to SharedPreferences if shouldPersist() is true).
+     * In case of using PreferenceDataStore, the restorePersistedValue is always true but the
+     * default value (if provided) is set.
+     *
+     * Preference.onSetInitialValue(boolean, Object) has been deprecated and replaced with onSetInitialValue(Object).
+     * PreferenceDataStore now also correctly restores default values.  ---support 28.0.0
+     */
     @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
+   /* protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
     {
         String value;
-        if (restoreValue)
+       if (restoreValue)
         {
-            if (defaultValue == null) value = getPersistedString("00:00");
+            if (defaultValue == null) value = getPersistedString("00:00"); //default value can be set in xml
             else value = getPersistedString(defaultValue.toString());
         }
         else
@@ -41,12 +52,26 @@ public class TimePreference extends DialogPreference
 
         hour = parseHour(value);
         minute = parseMinute(value);
+    }*/
+    protected void onSetInitialValue(Object defaultValue)
+    {
+        String value;
+
+        if(defaultValue == null)
+           value = getPersistedString("00:00"); //default value can be set in xml
+        else
+            value = getPersistedString(defaultValue.toString());
+
+        hour = parseHour(value);
+        minute = parseMinute(value);
     }
 
+    //save to shared preferences
     public void persistStringValue(String value)
     {
         persistString(value);
     }
+
 
     public static String timeToString(int h, int m)
     {

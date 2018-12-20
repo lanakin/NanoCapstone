@@ -18,10 +18,16 @@
         />
 
     <nanodegree.annekenl.walk360.settings.TimePreference
-        android:key="some_time"
-        android:title="Set some time"
-        android:defaultValue="12:00"
-        android:summary="Set some time"/>
+        android:key="start_time_walk360_key"
+        android:title="@string/start_time_title"
+        android:defaultValue="9:00"
+        android:summary="@string/choose_start_time"/>
+
+    <nanodegree.annekenl.walk360.settings.TimePreference
+        android:key="end_time_walk360_key"
+        android:title="@string/end_time_title"
+        android:defaultValue="17:00"
+        android:summary="@string/choose_end_time"/>
 
 
 </PreferenceScreen>

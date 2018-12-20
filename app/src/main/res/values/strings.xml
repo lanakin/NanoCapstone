@@ -74,6 +74,10 @@
 
     <string name="set">Set</string>
     <string name="cancel">Cancel</string>
+    <string name="choose_start_time">Choose When To Start Walking Reminders each day</string>
+    <string name="start_time_title">Reminder Start Time</string>
+    <string name="choose_end_time">Choose When To Stop Walking Reminders each day</string>
+    <string name="end_time_title">Reminder Stop Time</string>
 
 
 </resources>

@@ -26,11 +26,15 @@ public class TimePreferenceDialogFragmentCompat extends PreferenceDialogFragment
     {
         super.onBindDialogView(v);
         timePicker.setIs24HourView(false); //true
+
+        // Get the time from the related Preference
         TimePreference pref = (TimePreference) getPreference();
+        // Set the time to the TimePicker
         timePicker.setCurrentHour(pref.hour);
         timePicker.setCurrentMinute(pref.minute);
     }
 
+    //save the selected time when we click the OK button (positive result).
     @Override
     public void onDialogClosed(boolean positiveResult)
     {
@@ -41,7 +45,10 @@ public class TimePreferenceDialogFragmentCompat extends PreferenceDialogFragment
             pref.minute = timePicker.getCurrentMinute();
 
             String value = TimePreference.timeToString(pref.hour, pref.minute);
-            if (pref.callChangeListener(value)) pref.persistStringValue(value);
+
+            if (pref.callChangeListener(value)) pref.persistStringValue(value); // Save the value
+            //	callChangeListener(Object newValue)
+            //Call this method after the user changes the preference, but before the internal state is set.
         }
     }
 
