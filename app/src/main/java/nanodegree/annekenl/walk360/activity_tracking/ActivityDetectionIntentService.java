@@ -2,6 +2,10 @@ package nanodegree.annekenl.walk360.activity_tracking;
 
 //references:
 // https://www.androidauthority.com/using-the-activity-recognition-api-829339/
+// and google api example code:
+// https://developers.google.com/android/reference/com/google/android/gms/location
+// /ActivityRecognitionClient
+
 /* "Since leaving a service running in the background is a good way to use up precious system
  * resources, the Activity Recognition API delivers its data via an intent, which contains a list
  * of activities the user may be performing at this particular time. By creating a PendingIntent

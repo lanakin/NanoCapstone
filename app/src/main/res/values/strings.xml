@@ -83,5 +83,8 @@
     <string name="choose_end_time">Choose When To Stop Walking Reminders each day</string>
     <string name="end_time_title">Reminder Stop Time</string>
 
+    <string name="notif_channel_name">time-to-move</string>
+    <string name="notif_channel_desc">time-to-move-reminders</string>
+
 
 </resources>
