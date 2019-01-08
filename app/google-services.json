@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "797935831904",
+    "firebase_url": "https://walk360-697d0.firebaseio.com",
+    "project_id": "walk360-697d0",
+    "storage_bucket": "walk360-697d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797935831904:android:037668b326dc7906",
+        "android_client_info": {
+          "package_name": "nanodegree.anneken.walk360"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797935831904-qg0himono8c4kqu1d3m8nd3g59sadcpt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCglJ65ycyfUs-hcs5SfkGSCx_1wfpL-k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
