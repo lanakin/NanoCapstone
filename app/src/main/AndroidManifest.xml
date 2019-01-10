@@ -29,7 +29,7 @@
             android:exported="false">
         </receiver>
 
-        <receiver android:name="nanodegree.annekenl.walk360.alarm_manager.MyAlarmReceiver"
+        <receiver android:name="nanodegree.annekenl.walk360.alarm_manager.ActivityTrackingAlarmReceiver"
             android:exported="false">
         </receiver>
 

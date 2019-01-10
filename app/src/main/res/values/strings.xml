@@ -40,8 +40,8 @@
     <string name="dec">December</string>-->
 
     <string name="reminders_switch_walk360_key" translatable="false">reminders_switch_walk360_key</string>
-    <string name="push_notifications">Walking Reminders</string>
-    <string name="push_notifications_summary">Receive Push Notifications</string>
+    <string name="notifications">Walking Reminders</string>
+    <string name="notifications_summary">Track Activity and Receive Notifications</string>
 
     <string name="days_walk360_key" translatable="false">days_walk360_key</string>
     <string name="choose_days">Choose Days To Get Walking Reminders On</string>
@@ -85,6 +85,10 @@
 
     <string name="notif_channel_name" translatable="false">time-to-move</string>
     <string name="notif_channel_desc" translatable="false">time-to-move-reminders</string>
+
+    <string name="user_signin">Toggle Account Status</string>
+    <string name="user_signout_msg">You are logged out.</string>
+    <string name="user_signin_error_msg">Login Failed. Please Try Again.</string>
 
 
 </resources>

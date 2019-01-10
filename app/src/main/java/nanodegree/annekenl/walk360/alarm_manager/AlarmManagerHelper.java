@@ -22,7 +22,7 @@ public class AlarmManagerHelper
     @TargetApi(23)
     public void setAlarm(long minutes)
     {
-        Intent intent = new Intent(mContext, MyAlarmReceiver.class);
+        Intent intent = new Intent(mContext, ActivityTrackingAlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 300, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 

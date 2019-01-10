@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build.VERSION;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
@@ -25,10 +26,17 @@ import nanodegree.annekenl.walk360.alarm_manager.AlarmManagerHelper;
 
 public class HomeScreenFragment extends Fragment  implements SharedPreferences.OnSharedPreferenceChangeListener
 {
+    public static final String MAX_SITTING_TIME = "WALK_360_MAXSIT";
+    public static final String MAX_WALKING_TIME = "WALK_360_MAXWALK";
+    public static final String MAX_SITTING_STR = "WALK_360_MAXSIT_STR";
+    public static final String MAX_WALKING_STR = "WALK_360_MAXWALK_STR";
+
     private Context mContext;
     private Chronometer mChronometer;
     private TextView mDate;
     private TextView homeTV;
+    private TextView sittingMaxTV;
+    private TextView walkingMaxTV;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -54,8 +62,10 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         mChronometer = (Chronometer) rootView.findViewById(R.id.simpleChronometer); // initiate a chronometer
 
         mDate = rootView.findViewById(R.id.homeDateTV);
-
         homeTV = rootView.findViewById(R.id.homeScreenTV);
+
+        sittingMaxTV = rootView.findViewById(R.id.sitting_max);
+        walkingMaxTV = rootView.findViewById(R.id.walking_max);
 
         return rootView;
     }
@@ -79,6 +89,14 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
             today += localDate.format(formatter);
         }
         mDate.setText(today);
+
+        String maxSitStr = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getString(MAX_SITTING_STR, "0");
+        sittingMaxTV.setText(maxSitStr);
+
+        String maxWalkStr = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getString(MAX_WALKING_STR, "0");
+        walkingMaxTV.setText(maxWalkStr);
     }
 
     @Override
@@ -140,10 +158,57 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s)
     {
         if (s.equals(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY)) {
+            saveActivityDuration();
             updateChronometer();
         }
         else if(s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
             updateTestTV();
+        }
+    }
+
+
+    private void saveActivityDuration()
+    {
+        boolean isActiveNow = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
+
+        long elapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase(); //need to determine if greater than previous saved duration
+
+        String chronoTimeStr = mChronometer.getText().toString();
+        String temp[] = chronoTimeStr.trim().split(" ");
+        chronoTimeStr = temp[0]; //"%s" + " " + "Active/InActive Time" - chrono. display format
+
+        if(isActiveNow) //saved previous duration of inactive/sitting time
+        {
+            long prevMaxSitTime = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getLong(MAX_SITTING_TIME, 0);
+
+            if(elapsedMillis > prevMaxSitTime)
+            {
+                PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .edit()
+                        .putLong(MAX_SITTING_TIME,elapsedMillis)
+                        .putString(MAX_SITTING_STR,chronoTimeStr)
+                        .commit();
+
+                sittingMaxTV.setText(chronoTimeStr);
+            }
+        }
+        else //saved previous duration of walking time
+        {
+            long prevMaxWalkTime = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getLong(MAX_WALKING_TIME, 0);
+
+            if(elapsedMillis > prevMaxWalkTime)
+            {
+                PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .edit()
+                        .putLong(MAX_WALKING_TIME,elapsedMillis)
+                        .putString(MAX_WALKING_STR,chronoTimeStr)
+                        .commit();
+
+                walkingMaxTV.setText(chronoTimeStr);
+            }
         }
     }
 
