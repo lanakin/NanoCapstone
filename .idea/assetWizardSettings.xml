@@ -5,7 +5,40 @@
       <map>
         <entry key="imageWizard">
           <value>
-            <PersistentState />
+            <PersistentState>
+              <option name="children">
+                <map>
+                  <entry key="imageAssetPanel">
+                    <value>
+                      <PersistentState>
+                        <option name="children">
+                          <map>
+                            <entry key="actionbar">
+                              <value>
+                                <PersistentState>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/baseline-vpn_key-white-24/1x/baseline_vpn_key_white_24dp.png" />
+                                      <entry key="outputName" value="ic_account_auth" />
+                                    </map>
+                                  </option>
+                                </PersistentState>
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="ACTIONBAR" />
+                          </map>
+                        </option>
+                      </PersistentState>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </PersistentState>
           </value>
         </entry>
         <entry key="vectorWizard">
@@ -20,8 +53,8 @@
                           <map>
                             <entry key="assetSourceType" value="FILE" />
                             <entry key="autoMirrored" value="true" />
-                            <entry key="outputName" value="ic_pedestrian_walking" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/../pedestrian-walking.svg" />
+                            <entry key="outputName" value="ic_baseline_vpn_key_24px" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/baseline-vpn_key-24px (1).svg" />
                           </map>
                         </option>
                       </PersistentState>

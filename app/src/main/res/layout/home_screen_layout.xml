@@ -39,6 +39,14 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GOAL MAX SITTING TIME OF 60 MINUTES OR LESS"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

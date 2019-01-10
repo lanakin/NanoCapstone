@@ -29,6 +29,8 @@ public class ActivityTrackerHelper
 
     public static final String CHRONOMETER_EVENT_START_KEY = "WALK_360_EVENT_START"; //transition start time (active or inactive)
     public static final String IS_ACTIVE_KEY = "WALK_360_ISACTIVE";
+    public static final String MAX_SITTING_TIME = "WALK_360_MAXSIT";
+    public static final String MAX_WALKING_TIME = "WALK_360_MAXWALK";
 
     private ActivityRecognitionClient mActivityRecognitionClient;
     private PendingIntent mActivityTransIntent;

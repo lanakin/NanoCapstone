@@ -12,6 +12,7 @@ import android.widget.Toast;
 import nanodegree.annekenl.walk360.MainActivity;
 import nanodegree.annekenl.walk360.R;
 import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
+import nanodegree.annekenl.walk360.utility.TimeHelper;
 
 //https://developers.google.com/android/reference/com/google/android/gms/common/GoogleApiAvailability
 
@@ -19,7 +20,7 @@ public class ActivityTrackingAlarmReceiver extends BroadcastReceiver
 {
     private AlarmManagerHelper mAlarmManagerHelper;
     //private ActivityTrackerHelper mActivityTracker;
-    protected final static long NOTIFICATION_EXPIRE_TIME = 30*AlarmManagerHelper.minuteInMilliseconds;
+    protected final static long NOTIFICATION_EXPIRE_TIME = 15*TimeHelper.minuteInMilliseconds;
 
 
     @Override
@@ -30,7 +31,7 @@ public class ActivityTrackingAlarmReceiver extends BroadcastReceiver
 
         if(startTime != 0)
         {
-            long inactiveTime = AlarmManagerHelper.elapsedWallTimeMillisInMinutes(startTime);
+            long inactiveTime = TimeHelper.elapsedWallTimeMillisInMinutes(startTime);
 
             if(inactiveTime >= ActivityTrackerHelper.MAX_INACTIVE_TIME_MINUTES)
             {
@@ -38,9 +39,9 @@ public class ActivityTrackingAlarmReceiver extends BroadcastReceiver
                         Toast.LENGTH_LONG).show();
 
                 alertTimeToMove(context);
-                //SET ALARM TO CHECK AGAIN FOR MAX INACTIVITY
-                setReminderCheckForMaxInactivity(context,NOTIFICATION_EXPIRE_TIME    //check again if user missed the notification to move
-                                                            + AlarmManagerHelper.minuteInMilliseconds);   // and is still inactive
+                //SET ALARM OFR ADDITIONAL REMINDERS AFTER THE MAX MARK -revist later
+                //setReminderCheckForMaxInactivity(context,NOTIFICATION_EXPIRE_TIME    //check again if user missed the notification to move
+                                                            //+ AlarmManagerHelper.minuteInMilliseconds);   // and is still inactive
 
             }
             else
@@ -63,7 +64,7 @@ public class ActivityTrackingAlarmReceiver extends BroadcastReceiver
         }
     }
 
-    //set an alarm to check if user has been inactive/sitting for a set max period of time (60 min)
+    //set an alarm to check if user has been inactive/sitting for a set max period of time ~60 min
     private void setReminderCheckForMaxInactivity(Context context, Long minutes)
     {
         mAlarmManagerHelper = new AlarmManagerHelper(context);
@@ -87,7 +88,7 @@ public class ActivityTrackingAlarmReceiver extends BroadcastReceiver
                 .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-                .setTimeoutAfter(NOTIFICATION_EXPIRE_TIME);  //dismiss notification after long period and set alarm to check if user needs another reminder to move
+                .setTimeoutAfter(NOTIFICATION_EXPIRE_TIME);  //dismiss notification after long period
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(360, mBuilder.build());

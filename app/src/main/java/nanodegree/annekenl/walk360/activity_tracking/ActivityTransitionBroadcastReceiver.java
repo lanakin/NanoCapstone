@@ -11,6 +11,7 @@ package nanodegree.annekenl.walk360.activity_tracking;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
 import com.google.android.gms.location.ActivityTransition;
@@ -22,6 +23,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import nanodegree.annekenl.walk360.alarm_manager.AlarmManagerHelper;
+import nanodegree.annekenl.walk360.utility.TimeHelper;
 
 public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
 {
@@ -43,8 +45,9 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
             ActivityTransitionResult result = ActivityTransitionResult.extractResult(intent);
             String transTest = "";
             mContext = context;
-            boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
+
+            //boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    //.getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
 
             //for (ActivityTransitionEvent event : result.getTransitionEvents())
            // { // chronological sequence of events....
@@ -58,7 +61,7 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
 
                 stillStartTime = System.currentTimeMillis();  //wall time
 
-                transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track start of last event for active or inactive time
+                transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track start of event for chronometer/duration
 
                 //display test
                 transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
@@ -109,27 +112,75 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
 
     private void handleUserIsActive()
     {
-        PreferenceManager.getDefaultSharedPreferences(mContext)
-                .edit()
-                .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, 0)
-                .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos)
-                .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, true)
-                .commit();
+        long elapsedSitTime = getPreviousEventDurationTime();
+        long prevMaxSitTime = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getLong(ActivityTrackerHelper.MAX_SITTING_TIME, 0);
+
+        if(elapsedSitTime > prevMaxSitTime)
+        {
+            PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .edit()
+                    .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, 0)  //0 indicates still/inactive time has ended
+                    .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos) //save new event time
+                    .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, true)
+                    .putLong(ActivityTrackerHelper.MAX_SITTING_TIME, elapsedSitTime) //update max time
+                    .commit();
+        } else {
+            PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .edit()
+                    .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, 0)
+                    .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos) //save new event time
+                    .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, true)
+                    .commit();
+        }
+
     }
 
     private void handleUserIsInactive()
     {
-        //log time of stillness started
-        PreferenceManager.getDefaultSharedPreferences(mContext)
-                .edit()
-                .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, stillStartTime)  //used to determine time in minutes
-                .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos)
-                .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false)
-                .commit();
+        long elapsedWalkTime = getPreviousEventDurationTime();
+        long prevMaxWalkTime = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getLong(ActivityTrackerHelper.MAX_WALKING_TIME, 0);
+
+        if(elapsedWalkTime > prevMaxWalkTime)
+        {
+            PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .edit()
+                    .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, stillStartTime)  //used to determine time in minutes
+                    .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos)
+                    .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false)
+                    .putLong(ActivityTrackerHelper.MAX_WALKING_TIME, elapsedWalkTime) //update max time
+                    .commit();
+        } else {
+            PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .edit()
+                    .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, stillStartTime)  //used to determine time in minutes
+                    .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos)
+                    .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false)
+                    .commit();
+        }
 
         //start alarm for reminder to move in 60 minutes
         mAlarmManagerHelper = new AlarmManagerHelper(mContext);
         mAlarmManagerHelper.setAlarm(2); //test with short time
+    }
+
+    private long getPreviousEventDurationTime()
+    {
+        long lastEventStartTime = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, 0);
+
+        long elapsedTime = 0;
+
+        if(lastEventStartTime != 0) {
+            long tempMilliSeconds = 0;
+            tempMilliSeconds = TimeHelper.nanosecondsToMilliseconds(lastEventStartTime); //activity transition's time result
+                                                                                            // is in real-time nanoseconds*
+
+            elapsedTime = SystemClock.elapsedRealtime() - tempMilliSeconds;
+        }
+
+        return elapsedTime;
     }
 
 }

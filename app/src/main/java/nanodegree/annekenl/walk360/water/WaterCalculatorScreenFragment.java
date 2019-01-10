@@ -1,10 +1,12 @@
-package nanodegree.annekenl.walk360;
+package nanodegree.annekenl.walk360.water;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import nanodegree.annekenl.walk360.R;
 
 public class WaterCalculatorScreenFragment extends Fragment
 {

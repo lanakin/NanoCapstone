@@ -1,4 +1,4 @@
-package nanodegree.annekenl.walk360;
+package nanodegree.annekenl.walk360.history;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,13 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class HealthySnacksScreenFragment extends Fragment
+import nanodegree.annekenl.walk360.R;
+
+public class HistoryScreenFragment extends Fragment
 {
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public HealthySnacksScreenFragment() {
+    public HistoryScreenFragment() {
     }
 
     @Override
@@ -36,7 +38,7 @@ public class HealthySnacksScreenFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.healthy_snacks_screen_layout, container, false);
+        View rootView = inflater.inflate(R.layout.history_screen_layout, container, false);
 
         return rootView;
     }

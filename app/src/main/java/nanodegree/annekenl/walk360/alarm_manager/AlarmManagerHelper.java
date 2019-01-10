@@ -8,11 +8,12 @@ import android.content.Intent;
 import android.os.Build.VERSION;
 import android.widget.Toast;
 
+import nanodegree.annekenl.walk360.utility.TimeHelper;
+
 //reference: http://www.vogella.com/tutorials/AndroidBroadcastReceiver/article.html
 public class AlarmManagerHelper
 {
     private Context mContext;
-    public final static long minuteInMilliseconds = 60000;
 
     public AlarmManagerHelper(Context context)
     {
@@ -30,26 +31,14 @@ public class AlarmManagerHelper
 
         if(VERSION.SDK_INT <= 19) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-                    + (minutes * minuteInMilliseconds), pendingIntent);
+                    + (minutes * TimeHelper.minuteInMilliseconds), pendingIntent);
         } else {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-                    + (minutes * minuteInMilliseconds), pendingIntent);
+                    + (minutes * TimeHelper.minuteInMilliseconds), pendingIntent);
         }
 
         Toast.makeText(mContext, "Alarm set in " + minutes + " minutes",
                 Toast.LENGTH_LONG).show();
-    }
-
-
-    public static long nanosecondsToMilliseconds(long nanoseconds) {
-        return nanoseconds / 1000000;
-    }
-
-    public static long elapsedWallTimeMillisInMinutes(long startMillis)
-    {
-        long elapsedTime = System.currentTimeMillis() - startMillis;
-
-        return elapsedTime / minuteInMilliseconds;
     }
 
 }

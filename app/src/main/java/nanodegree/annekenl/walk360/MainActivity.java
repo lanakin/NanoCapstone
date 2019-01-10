@@ -31,7 +31,10 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
+import nanodegree.annekenl.walk360.healthy_snacks.HealthySnacksScreenFragment;
+import nanodegree.annekenl.walk360.history.HistoryScreenFragment;
 import nanodegree.annekenl.walk360.settings.SettingsScreenFragment;
+import nanodegree.annekenl.walk360.water.WaterCalculatorScreenFragment;
 
 // references:
 //https://developers.google.com/android/reference/com/google/android/gms/common/GoogleApiAvailability
