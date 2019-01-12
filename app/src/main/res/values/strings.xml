@@ -90,5 +90,6 @@
     <string name="user_signout_msg">You are logged out.</string>
     <string name="user_signin_error_msg">Login Failed. Please Try Again.</string>
 
+    <string name="coming_soon">Coming Soon!</string>
 
 </resources>

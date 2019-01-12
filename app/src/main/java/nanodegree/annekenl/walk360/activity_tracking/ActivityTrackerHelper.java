@@ -73,20 +73,20 @@ public class ActivityTrackerHelper
 
     ActivityTransitionRequest buildTransitionRequest()
     {
+        //in testing, "less is more" it seems, to keep it simple and accurate for this app's goal
         List transitions = new ArrayList<>();
         transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.STILL)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build());
-        transitions.add(new ActivityTransition.Builder()
+        /*transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.IN_VEHICLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build());
+                .build());*/
         transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.STILL)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build());
-        //in testing, "less is more" it seems, to keep it simple and accurate for this app's goal
         /*transitions.add(new ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.WALKING)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)

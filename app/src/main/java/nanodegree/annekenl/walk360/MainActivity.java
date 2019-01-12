@@ -67,6 +67,56 @@ public class MainActivity extends AppCompatActivity
             }
         });*/
 
+      /*  // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        db.setFirestoreSettings(settings);
+        // With this change, timestamps stored in Cloud Firestore will be read back as
+        // com.google.firebase.Timestamp objects instead of as system java.util.Date objects.
+        // So you will also need to update code expecting a java.util.Date to instead expect a Timestamp.
+        FirebaseFirestore.setLoggingEnabled(true);
+
+        // Create a new user with a first and last name
+        Map<String, Object> user = new HashMap<>();
+        user.put("first", "Ada");
+        user.put("middle","susan");
+        user.put("last", "Lovelace");
+        user.put("born", 1815);
+
+        // Add a new document with a generated ID
+        db.collection("users")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("firestore", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("firestore", "Error adding document", e);
+                    }
+                });
+
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("firestore", document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.w("firestore", "Error getting documents.", task.getException());
+                        }
+                    }
+                });*/
+
         //sign-in
         boolean isSignedIn = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(AUTH_STATUS, false);
@@ -76,6 +126,7 @@ public class MainActivity extends AppCompatActivity
 
         checkGooglePlayServiceAvailability();
         createNotificationChannel();
+
     }
 
     @Override

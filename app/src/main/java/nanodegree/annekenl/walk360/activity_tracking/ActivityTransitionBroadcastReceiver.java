@@ -46,11 +46,8 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
             String transTest = "";
             mContext = context;
 
-            //boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    //.getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
-
-            //for (ActivityTransitionEvent event : result.getTransitionEvents())
-           // { // chronological sequence of events....
+            boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
 
             List<ActivityTransitionEvent> transitionEvents = result.getTransitionEvents();
 
@@ -61,12 +58,12 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
 
                 stillStartTime = System.currentTimeMillis();  //wall time
 
-                transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track start of event for chronometer/duration
+                transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track exact start of event for chronometer/duration
 
-                //display test
+                //test
                 transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
                         + " " + ActivityTrackerHelper.activityTransitionTypeToString(mContext, mostRecentTransition.getTransitionType())
-                        + " " + Calendar.getInstance().getTime() //display time
+                        + " " + Calendar.getInstance().getTime() //wall time
                         + "\n";
 
                 PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -76,35 +73,19 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
 
                 switch (mostRecentTransition.getActivityType())
                 {
-                    //in testing, "less is more" it seems, to keep it simple and accurate for this app's goal
-                  /*  case DetectedActivity.ON_BICYCLE:
-                    case DetectedActivity.RUNNING:
-                    case DetectedActivity.WALKING:
-                        if (event.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER
+                    //in testing, "less is more" it seems, to keep it simple and fast detection -still and walking usually fire together as well
+                    case DetectedActivity.STILL:
+                        if ((mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                                 && !isActive)  //only reset time if transition event away from inactivity
                         {
                             handleUserIsActive();
                         }
-                        break;*/
-                    case DetectedActivity.STILL:
-                        if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                               // && !isActive)  //only reset time if transition event away from inactivity
-                        {
-                            handleUserIsActive();
-                        }
-                        else if(mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                                //&& isActive) //only reset time if transition event away from activity
+                        else if((mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                                && isActive) //only reset time if transition event away from activity
                         {
                             handleUserIsInactive();
                         }
                         break;
-                   /* case DetectedActivity.IN_VEHICLE:
-                        if (mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                               // && isActive)  //only reset time if transition event away from activity
-                        {
-                            handleUserIsInactive();
-                        }
-                        break;*/
                 }
             }
         }

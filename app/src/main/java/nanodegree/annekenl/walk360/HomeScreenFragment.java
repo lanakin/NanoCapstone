@@ -26,8 +26,6 @@ import nanodegree.annekenl.walk360.utility.TimeHelper;
 
 public class HomeScreenFragment extends Fragment  implements SharedPreferences.OnSharedPreferenceChangeListener
 {
-    //public static final String MAX_SITTING_STR = "WALK_360_MAXSIT_STR";
-    //public static final String MAX_WALKING_STR = "WALK_360_MAXWALK_STR";
     private Context mContext;
     private Chronometer mChronometer;
     private TextView mDate;
@@ -73,8 +71,6 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     {
         super.onViewCreated(view, savedInstanceState);
 
-        updateChronometer();
-
         String today = "";
         if(VERSION.SDK_INT <= 25) {
            Calendar calendarDate = Calendar.getInstance();
@@ -94,9 +90,10 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         super.onResume();
         PreferenceManager.getDefaultSharedPreferences(mContext)
                 .registerOnSharedPreferenceChangeListener(this);
+
         updateChronometer();
-        updateTestTV();
         updateMaxTimesTVs();
+        updateTestTV();
     }
 
 
@@ -132,28 +129,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
                 mChronometer.setTextColor(Color.RED);
             }
 
-            mChronometer.start(); // start a chronometer
-        }
-    }
-
-    private void updateTestTV()
-    {
-        String temp =
-                PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, "");
-        homeTV.setText(temp);
-    }
-
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s)
-    {
-        if (s.equals(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY)) {
-            updateChronometer();
-            updateMaxTimesTVs();
-        }
-        else if(s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
-            updateTestTV();
+            mChronometer.start();
         }
     }
 
@@ -173,7 +149,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         walkingMaxTV.setText(maxWalkTimeStr);
     }
 
-    /*
+    /* reference:
        https://www.skptricks.com/2018/09/convert-milliseconds-into-days-hours-minutes-seconds-in-java.html
        Determined with TimeUnit
      */
@@ -188,103 +164,33 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         final long seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds)
                 - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds));
 
-        return String.format("%d Hours \n%d Minutes \n%d Seconds", hours, minutes, seconds);
+        return String.format("%d Hour(s) \n%d Minute(s) \n%d Second(s)", hours, minutes, seconds);
     }
 
 
-    /* called before re-starting the chronometer*/
-   /* private void saveActivityDuration()
+    private void updateTestTV()
     {
-        boolean isActiveNow = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
-
-        //long elapsedMillis = SystemClock.elapsedRealtime() - mChronometer.getBase(); //need to determine if greater than previous saved duration
-        Long currElapsedDuration = parseChronometerTimeByIntParts();
-
-        String chronoTimeStr = parseChronometerTimeByStrParts();
-
-        if(isActiveNow) //saved previous duration of inactive/sitting time
-        {
-            long prevMaxSitTime = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    .getLong(MAX_SITTING_TIME, 0);
-
-            if(currElapsedDuration > prevMaxSitTime)
-            {
+        String temp =
                 PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .edit()
-                        .putLong(MAX_SITTING_TIME,currElapsedDuration)
-                        .putString(MAX_SITTING_STR,chronoTimeStr)
-                        .commit();
+                        .getString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, "");
 
-                sittingMaxTV.setText(chronoTimeStr);
-            }
-        }
-        else //saved previous duration of walking time
-        {
-            long prevMaxWalkTime = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    .getLong(MAX_WALKING_TIME, 0);
-
-            if(currElapsedDuration > prevMaxWalkTime)
-            {
-                PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .edit()
-                        .putLong(MAX_WALKING_TIME,currElapsedDuration)
-                        .putString(MAX_WALKING_STR,chronoTimeStr)
-                        .commit();
-
-                walkingMaxTV.setText(chronoTimeStr);
-            }
-        }
-    }*/
-
-
-  /*  //"%s" + " " + "Active/InActive Time" - chrono. display format
-    private String parseChronometerTimeByStrParts()
-    {
-        String chronoStr = mChronometer.getText().toString();
-        String temp[] = chronoStr.trim().split(" ");
-        chronoStr = temp[0];
-
-        String timeParts[] = chronoStr.split(":"); //00:00:00
-        String ret = "0";
-
-        if(timeParts.length == 3)
-            ret = timeParts[0] + " hours" + timeParts[1] + " minutes"; //leaving off seconds
-        else if(timeParts.length == 2)
-            ret = timeParts[0] + " minutes"; //leaving off seconds
-        else if(timeParts.length == 1)
-            ret = timeParts[0] + " seconds";
-
-        return ret;
+        temp = temp.replace("Still Started","Walking Started At: ");
+        temp = temp.replace("Still Stopped", "Sitting Started At: ");
+        homeTV.setText(temp);
     }
 
 
-    //"%s" + " " + "Active/InActive Time" - chrono. display format
-    private long parseChronometerTimeByIntParts()
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s)
     {
-        String chronoStr = mChronometer.getText().toString();
-        String temp[] = chronoStr.trim().split(" ");
-        chronoStr = temp[0];
-
-        String timeParts[] = chronoStr.split(":"); //00:00:00
-        long totalMinutes = 0;
-
-        try {
-            if (timeParts.length == 3)  //hours, minutes, seconds
-            {
-                int hours = Integer.parseInt(timeParts[0]);
-                int minutes = Integer.parseInt(timeParts[1]);
-
-                totalMinutes = (hours*60) + minutes; //leaving off seconds
-            }
-            else if (timeParts.length == 2)  //minutes,seconds
-                totalMinutes = Integer.parseInt(timeParts[0]); //leaving off seconds
-            else if (timeParts.length == 1)
-                totalMinutes = 0;
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (s.equals(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY)) {
+            updateChronometer();
+            updateMaxTimesTVs();
+            //updateTestTV();
         }
+        else if(s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
+            updateTestTV();
+        }
+    }
 
-        return totalMinutes;
-    }*/
 }

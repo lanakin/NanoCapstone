@@ -16,6 +16,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro' //error with mpandroidchart - 2 found~
+    }
+}
+
+repositories {
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -35,6 +43,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.6'  //https://firebase.google.com/support/release-notes/android#latest_sdk_versions
     //implementation 'com.google.firebase:firebase-auth:16.1.0' //Firebase Authentication
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'  //provides UI and automatic handling of authentication flows
+    implementation 'com.google.firebase:firebase-firestore:17.1.5' //cloud firestore (db)
+
+    implementation 'com.jjoe64:graphview:4.2.2'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
