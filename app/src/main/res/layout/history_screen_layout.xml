@@ -22,44 +22,50 @@
                         android:text="History"
                          />-->
 
-                <!--<com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/chart1"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    />-->
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sitting_chart_label"
+                    android:layout_margin="2dp"
+                    />
                 <!-- Add a Horizontal Bar Chart using MPAndroidChart library -->
                 <com.github.mikephil.charting.charts.HorizontalBarChart
-                    android:id="@+id/skill_rating_chart"
+                    android:id="@+id/sitting_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="8dp"
+                    />
 
-                      <!--<com.jjoe64.graphview.GraphView
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
 
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginBottom="20dp"
-                            android:id="@+id/graph" />-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/walking_chart_label"
+                    android:layout_margin="2dp"
+                    />
+                <!-- Add a Horizontal Bar Chart using MPAndroidChart library -->
+                <com.github.mikephil.charting.charts.HorizontalBarChart
+                    android:id="@+id/walking_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="8dp"
+                    />
 
-                        <!--<com.jjoe64.graphview.GraphView
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
 
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginBottom="20dp"
-                            android:id="@+id/graph2" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/water_chart_label"
+                    android:layout_margin="2dp"
+                    />
+                <!-- Add a Horizontal Bar Chart using MPAndroidChart library -->
+                <com.github.mikephil.charting.charts.HorizontalBarChart
+                    android:id="@+id/water_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="8dp"
+                    />
 
-                        <com.jjoe64.graphview.GraphView
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
-
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_marginBottom="20dp"
-                            android:id="@+id/graph3" />-->
 
                     <View
                         android:layout_width="match_parent"
