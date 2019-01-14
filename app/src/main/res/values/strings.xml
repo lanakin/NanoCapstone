@@ -96,4 +96,12 @@
     <string name="walking_chart_label">Longest Continuous Period Walking Each Day (Minutes)</string>
     <string name="water_chart_label">Total Amount of Water Consumed Each Day</string>
 
+    <string name="water_goal_desc">A simple goal for daily water intake
+        can be calculated as 0.5 fluid ounces x your body weight in pounds.</string>
+    <string name="water_goal_desc2">Note: This recommendation excludes extreme factors that may increase water intake needs, such as during exercise and hot/humid weather.</string>
+    <string name="water_input_label">Enter your body weight below to calculate a recommended daily amount of water to drink: </string>
+    <string name="water_input_hint">weight in pounds</string>
+    <string name="water_calculate_btn_label">Calculate</string>
+    <string name="water_result_btn_label">Recommendation:</string>
+
 </resources>

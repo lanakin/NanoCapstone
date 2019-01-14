@@ -93,7 +93,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         updateChronometer();
         updateMaxTimesTVs();
-        updateTestTV();
+        //updateTestTV();
     }
 
 
