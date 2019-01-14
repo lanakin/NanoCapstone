@@ -28,12 +28,13 @@
                 android:text="@string/water_goal_desc"
                 android:padding="2dp"
                 android:gravity="center_horizontal"
+                android:textColor="@color/colorPrimaryDark"
                 />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:text="@string/water_goal_desc2"
                 android:padding="2dp"
                 android:gravity="center_horizontal"
