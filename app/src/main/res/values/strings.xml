@@ -104,4 +104,6 @@
     <string name="water_calculate_btn_label">Calculate</string>
     <string name="water_result_btn_label">Recommendation:</string>
 
+    <string name="water_add_btn_label">Add Water Intake</string>
+
 </resources>

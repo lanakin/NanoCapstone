@@ -29,7 +29,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     private Context mContext;
     private Chronometer mChronometer;
     private TextView mDate;
-    private TextView homeTV;
+    //private TextView homeTV;
     private TextView sittingMaxTV;
     private TextView walkingMaxTV;
 
@@ -57,7 +57,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         mChronometer = (Chronometer) rootView.findViewById(R.id.simpleChronometer); // initiate a chronometer
 
         mDate = rootView.findViewById(R.id.homeDateTV);
-        homeTV = rootView.findViewById(R.id.homeScreenTV);
+        //homeTV = rootView.findViewById(R.id.homeScreenTV);
 
         sittingMaxTV = rootView.findViewById(R.id.sitting_max);
         walkingMaxTV = rootView.findViewById(R.id.walking_max);
@@ -168,7 +168,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     }
 
 
-    private void updateTestTV()
+  /*  private void updateTestTV()
     {
         String temp =
                 PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -177,7 +177,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         temp = temp.replace("Still Started","Walking Started At: ");
         temp = temp.replace("Still Stopped", "Sitting Started At: ");
         homeTV.setText(temp);
-    }
+    }*/
 
 
     @Override
@@ -189,7 +189,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
             //updateTestTV();
         }
         else if(s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
-            updateTestTV();
+            //updateTestTV();
         }
     }
 

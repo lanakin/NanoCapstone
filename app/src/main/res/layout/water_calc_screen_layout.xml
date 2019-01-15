@@ -67,7 +67,11 @@
                     android:id="@+id/calculateBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/water_calculate_btn_label" />
+                    android:text="@string/water_calculate_btn_label"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_with_shadow_border"
+                    android:textColor="@color/colorAccent"
+                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"

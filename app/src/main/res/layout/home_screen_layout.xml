@@ -16,6 +16,7 @@
         android:textSize="18sp"
         android:layout_gravity="center_horizontal"
         android:layout_margin="15dp"
+        android:textColor="@color/colorPrimaryDark"
         />
 
     <LinearLayout
@@ -45,6 +46,8 @@
         android:text="GOAL MAX SITTING TIME OF 1 HOUR OR LESS"
         android:gravity="center"
         android:layout_margin="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
         />
 
     <LinearLayout
@@ -61,7 +64,7 @@
             android:text = "Max Sitting Time:"
             android:padding="5dp"
             android:layout_margin="5dp"
-            android:gravity="right"
+            android:gravity="end"
             />
         <TextView
             android:id="@+id/sitting_max"
@@ -87,7 +90,7 @@
             android:text = "Max Walking Time:"
             android:padding="5dp"
             android:layout_margin="5dp"
-            android:gravity="right"
+            android:gravity="end"
             />
         <TextView
             android:id="@+id/walking_max"
@@ -99,11 +102,58 @@
             />
     </LinearLayout>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/homeScreenTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        />
+        />-->
+
+    <LinearLayout
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        >
+
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/water_glass"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="15dp"
+            >
+
+            <TextView
+                android:id="@+id/waterTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Today's Total: 8 ounces (1 cup)"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimaryDark"
+                />
+
+            <Button
+                android:id="@+id/waterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/water_add_btn_label"
+                android:textAllCaps="false"
+                android:background="@drawable/button_with_shadow_border"
+                android:textColor="@color/colorAccent"
+                android:padding="10dp"
+                android:layout_margin="10dp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
