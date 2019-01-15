@@ -94,7 +94,7 @@
 
     <string name="sitting_chart_label">Longest Continuous Period Sitting Each Day (Minutes)</string>
     <string name="walking_chart_label">Longest Continuous Period Walking Each Day (Minutes)</string>
-    <string name="water_chart_label">Total Amount of Water Consumed Each Day</string>
+    <string name="water_chart_label">Total Amount of Water Consumed Each Day (Ounces)</string>
 
     <string name="water_goal_desc">A simple goal for daily water intake
         can be calculated as 0.5 fluid ounces x your body weight in pounds.</string>

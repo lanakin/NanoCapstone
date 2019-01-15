@@ -73,6 +73,7 @@ public class HistoryScreenFragment extends Fragment
         barChart.getLegend().setEnabled(false);
         barChart.setPinchZoom(false);
         barChart.setDrawValueAboveBar(false); /**/
+        barChart.setTouchEnabled(false);
 
         //Display the axis on the left
         XAxis xAxis = barChart.getXAxis();
@@ -81,10 +82,7 @@ public class HistoryScreenFragment extends Fragment
         xAxis.setEnabled(true);
         xAxis.setDrawAxisLine(false);
 
-
         YAxis yLeft = barChart.getAxisLeft();
-
-        //Set the minimum and maximum bar lengths as per the values that they represent
         //yLeft.setAxisMaximum(100f);
         yLeft.setAxisMinimum(0);
         yLeft.setEnabled(false);
