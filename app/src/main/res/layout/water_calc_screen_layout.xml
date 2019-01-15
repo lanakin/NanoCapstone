@@ -60,6 +60,7 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/water_input_hint"
                             android:id="@+id/weightInput"
+                            android:inputType="numberDecimal"
                             />
                 </LinearLayout>
 

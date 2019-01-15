@@ -2,18 +2,26 @@ package nanodegree.annekenl.walk360;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -23,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
 import nanodegree.annekenl.walk360.utility.TimeHelper;
+import nanodegree.annekenl.walk360.water.WaterCalculatorScreenFragment;
 
 public class HomeScreenFragment extends Fragment  implements SharedPreferences.OnSharedPreferenceChangeListener
 {
@@ -32,6 +41,9 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     //private TextView homeTV;
     private TextView sittingMaxTV;
     private TextView walkingMaxTV;
+    private TextView waterTotalTV;
+    private Button addWater;
+    private Button subWater; //allow user to undo a mistaken amt.
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -61,6 +73,24 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         sittingMaxTV = rootView.findViewById(R.id.sitting_max);
         walkingMaxTV = rootView.findViewById(R.id.walking_max);
+        waterTotalTV = rootView.findViewById(R.id.waterTotal);
+        addWater = rootView.findViewById(R.id.waterButton);
+        subWater = rootView.findViewById(R.id.waterButtonSub);
+
+        addWater.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addWaterAmt();
+            }
+        });
+
+        subWater.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                subWaterAmt();
+            }
+        });
+
 
         return rootView;
     }
@@ -93,6 +123,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         updateChronometer();
         updateMaxTimesTVs();
+        updateWaterTotalTV();
         //updateTestTV();
     }
 
@@ -168,6 +199,18 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     }
 
 
+    private void updateWaterTotalTV()
+    {
+        float waterTotalOZ =
+                PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, 0);
+
+        float waterTotalCups = waterTotalOZ/8;
+
+        waterTotalTV.setText("Today's Total: "+String.format("%.2f",waterTotalOZ) + " ounces" + " (" + String.format("%.2f", waterTotalCups) + " cups)");
+    }
+
+
   /*  private void updateTestTV()
     {
         String temp =
@@ -191,6 +234,113 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         else if(s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
             //updateTestTV();
         }
+        else if(s.equals(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL)) {
+            updateWaterTotalTV();
+        }
+    }
+
+
+    /** to do later - store text in strings.xml & combine these methods **/
+
+    private void addWaterAmt()
+    {
+        final float waterTotalOZ =
+                PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, 0);
+
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Light_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(getActivity());
+        }
+
+        // Set up the input
+        final EditText input = new EditText(getActivity());
+        //float scale = getResources().getDisplayMetrics().density;
+       // int dpAsPixels = (int) (5*scale + 0.5f); //25dp
+        //input.setWidth(dpAsPixels);
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        builder.setView(input);
+
+        builder.setTitle("Add Water Amount")
+                .setMessage("Enter the amount of water consumed in ounces (8 ounces in a cup): ")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            float waterOZ = Float.parseFloat(input.getText().toString());
+
+                            float newTotal = waterTotalOZ + waterOZ;
+
+                            PreferenceManager.getDefaultSharedPreferences(mContext)
+                                    .edit()
+                                    .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, newTotal)
+                                    .commit();
+                        } catch (Exception e) {
+                            Toast.makeText(mContext, "No water amount was entered", Toast.LENGTH_SHORT);
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                //.setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+
+    private void subWaterAmt()
+    {
+        final float waterTotalOZ =
+                PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, 0);
+
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(getActivity(), android.R.style.Theme_Material_Light_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(getActivity());
+        }
+
+        // Set up the input
+        final EditText input = new EditText(getActivity());
+        //float scale = getResources().getDisplayMetrics().density;
+        // int dpAsPixels = (int) (5*scale + 0.5f); //25dp
+        //input.setWidth(dpAsPixels);
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        builder.setView(input);
+
+        builder.setTitle("Subtract Water Amount")
+                .setMessage("Enter the amount of water to subtract (amount wrongly entered): ")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            float waterOZ = Float.parseFloat(input.getText().toString());
+
+                            float newTotal = waterTotalOZ - waterOZ;
+
+                            PreferenceManager.getDefaultSharedPreferences(mContext)
+                                    .edit()
+                                    .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, newTotal)
+                                    .commit();
+                        } catch (Exception e) {
+                            Toast.makeText(mContext, "No water amount was entered", Toast.LENGTH_SHORT);
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                //.setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
 }
