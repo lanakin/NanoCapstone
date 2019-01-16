@@ -41,7 +41,9 @@ import nanodegree.annekenl.walk360.water.WaterCalculatorScreenFragment;
 //https://stackoverflow.com/questions/22493465/check-if-correct-google-play-service-available-unfortunately-application-has-s
 public class MainActivity extends AppCompatActivity
 {
-    public static final String AUTH_STATUS = "AUTH_STATUS";
+    public static final String AUTH_STATUS_KEY = "AUTH_STATUS_KEY";
+    public static final String TRACK_STATUS_KEY = "TRACK_STATUS_KEY";
+
     public final static String CHANNEL_ID = "TIME_TO_MOVE";
     public final static int RC_SIGN_IN = 500;
 
@@ -57,15 +59,6 @@ public class MainActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
 
-       /* FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_notifications_black_24dp));
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                       // .setAction("Action", null).show();
-            }
-        });*/
 
       /*  // Access a Cloud Firestore instance from your Activity
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -119,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         //sign-in
         boolean isSignedIn = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(AUTH_STATUS, false);
+                .getBoolean(AUTH_STATUS_KEY, false);
 
         if(!isSignedIn)
             authenticate();
@@ -155,16 +148,89 @@ public class MainActivity extends AppCompatActivity
 
         if (item.getItemId()==R.id.user_signin) {
             boolean isSignedIn = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                    .getBoolean(AUTH_STATUS, false);
+                    .getBoolean(AUTH_STATUS_KEY, false);
 
             if(!isSignedIn)
                 authenticate();
             else
                 signout();
         }
+        else if (item.getItemId()==R.id.track_activity) {
+            boolean isTracking = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                    .getBoolean(TRACK_STATUS_KEY, false);
+
+            if(!isTracking) {
+               resumeTracking();
+            }
+            else {
+               stopTracking();
+            }
+        }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void resumeTracking()
+    {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setTitle("Activity Tracking")
+                .setMessage("Do you want the app to start tracking activity?"  +
+                        "\n\n Note: It may take a minute or two for your device to detect walking activity.")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //requestActivitytrans
+                        try {
+                            Walk360Application mApplication = (Walk360Application) getApplicationContext();
+                            mApplication.getmActivityTracker().requestActivityTransitionUpdates();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void stopTracking()
+    {
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setTitle("Activity Tracking")
+                .setMessage("Do you want the app to stop tracking walking activity?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //stopActivityTrans
+                        try {
+                            Walk360Application mApplication = (Walk360Application) getApplicationContext();
+                            mApplication.getmActivityTracker().stopActivityTransitionUpdates();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
 
     private void signout()
     {
@@ -185,7 +251,7 @@ public class MainActivity extends AppCompatActivity
                                         Log.d("signout", "completed");
                                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                                                 .edit()
-                                                .putBoolean(AUTH_STATUS, false)
+                                                .putBoolean(AUTH_STATUS_KEY, false)
                                                 .commit();
                                         mUser = null;
                                     }
@@ -228,7 +294,7 @@ public class MainActivity extends AppCompatActivity
                 // Successfully signed in
                 PreferenceManager.getDefaultSharedPreferences(this)
                         .edit()
-                        .putBoolean(AUTH_STATUS, true)
+                        .putBoolean(AUTH_STATUS_KEY, true)
                         .commit();
 
                 mUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -242,6 +308,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
 
     private void checkGooglePlayServiceAvailability()
     {

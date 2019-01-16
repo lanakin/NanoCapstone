@@ -106,4 +106,6 @@
 
     <string name="water_add_btn_label">+ Water Intake</string>
     <string name="water_sub_btn_label">- Water Intake</string>
+
+    <string name="user_track">Toggle Activity Tracking</string>
 </resources>

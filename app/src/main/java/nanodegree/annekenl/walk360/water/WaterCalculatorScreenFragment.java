@@ -22,7 +22,7 @@ public class WaterCalculatorScreenFragment extends Fragment
     private EditText input;
     private TextView result;
 
-    public static final String WATER_DAILY_TOTAL = "WATER_DAILY_TOTAL";
+    public static final String WATER_DAILY_TOTAL_KEY = "WATER_DAILY_TOTAL_KEY";
 
     public WaterCalculatorScreenFragment() { }
 

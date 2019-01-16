@@ -137,7 +137,7 @@ public class HistoryScreenFragment extends Fragment
         //Add a list of bar entries
         ArrayList<BarEntry> entries = new ArrayList();
         entries.add(new BarEntry(0, 60));
-        entries.add(new BarEntry(1, 90));
+        entries.add(new BarEntry(1, 99));
         entries.add(new BarEntry(2, 65));
         entries.add(new BarEntry(3, 17));
         entries.add(new BarEntry(4, 93));

@@ -44,3 +44,10 @@ public class MyFirebaseMessagingService{} /*extends FirebaseMessagingService {
         // Implement this method to send token to your app server.
     }
 }*/
+
+/* manifest
+<service android:name="nanodegree.annekenl.walk360.notifications.MyFirebaseMessagingService">
+<intent-filter>
+<action android:name="com.google.firebase.MESSAGING_EVENT" />
+</intent-filter>
+</service> */

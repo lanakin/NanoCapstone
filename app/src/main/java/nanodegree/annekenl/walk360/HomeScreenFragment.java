@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -91,7 +92,6 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
             }
         });
 
-
         return rootView;
     }
 
@@ -137,30 +137,40 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
     protected void updateChronometer()
     {
-        boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
+        boolean isTracking = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getBoolean(MainActivity.TRACK_STATUS_KEY, false);
 
-        long startTime = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, 0);
+        if(isTracking) {
+            boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
 
-        mChronometer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+            long startTime = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, 0);
 
-        if (startTime != 0)
-        {
-            long currTime = TimeHelper.nanosecondsToMilliseconds(startTime); //activity transition's time result is in real-time nanoseconds*
-            mChronometer.setBase(currTime);
+            mChronometer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 
-            if (isActive) {
-                String chronoFormat = "%s" + " " + getResources().getString(R.string.active_time);
-                mChronometer.setFormat(chronoFormat);
-                mChronometer.setTextColor(Color.GREEN);
-            } else {
-                String chronoFormat = "%s " + " " + getResources().getString(R.string.inactive_time);
-                mChronometer.setFormat(chronoFormat);
-                mChronometer.setTextColor(Color.RED);
+            if (startTime != 0) {
+                long currTime = TimeHelper.nanosecondsToMilliseconds(startTime); //activity transition's time result is in real-time nanoseconds*
+                mChronometer.setBase(currTime);
+
+                if (isActive) {
+                    String chronoFormat = "%s" + " " + getResources().getString(R.string.active_time);
+                    mChronometer.setFormat(chronoFormat);
+                    mChronometer.setTextColor(Color.GREEN);
+                } else {
+                    String chronoFormat = "%s " + " " + getResources().getString(R.string.inactive_time);
+                    mChronometer.setFormat(chronoFormat);
+                    mChronometer.setTextColor(Color.RED);
+                }
+
+                mChronometer.start();
             }
-
-            mChronometer.start();
+        }
+        else {
+            mChronometer.setBase(SystemClock.elapsedRealtime());
+            mChronometer.setFormat("%s");
+            mChronometer.setTextColor(Color.BLACK);
+            mChronometer.stop();
         }
     }
 
@@ -168,13 +178,13 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     private void updateMaxTimesTVs()
     {
         long maxSitTime = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getLong(ActivityTrackerHelper.MAX_SITTING_TIME, 0);
+                .getLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, 0);
 
         String maxSitTimeStr = milliSecondsToDisplayStr(maxSitTime);
         sittingMaxTV.setText(maxSitTimeStr);
 
         long maxWalkTime = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getLong(ActivityTrackerHelper.MAX_WALKING_TIME, 0);
+                .getLong(ActivityTrackerHelper.MAX_WALKING_TIME_KEY, 0);
 
         String maxWalkTimeStr = milliSecondsToDisplayStr(maxWalkTime);
         walkingMaxTV.setText(maxWalkTimeStr);
@@ -203,7 +213,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     {
         float waterTotalOZ =
                 PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, 0);
+                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0);
 
         float waterTotalCups = waterTotalOZ/8;
 
@@ -226,27 +236,30 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s)
     {
-        if (s.equals(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY)) {
+        if(s.equals(MainActivity.TRACK_STATUS_KEY)) {
+           updateChronometer();
+        }
+        else if (s.equals(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY)) {
             updateChronometer();
             updateMaxTimesTVs();
             //updateTestTV();
         }
-        else if(s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
+        //else if(s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
             //updateTestTV();
-        }
-        else if(s.equals(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL)) {
+        //}
+        else if(s.equals(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY)) {
             updateWaterTotalTV();
         }
     }
 
 
-    /** to do later - store text in strings.xml & combine these methods **/
+    /** to do later - store text in strings.xml & possibly combine these methods **/
 
     private void addWaterAmt()
     {
         final float waterTotalOZ =
                 PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, 0);
+                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0);
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -257,9 +270,6 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         // Set up the input
         final EditText input = new EditText(getActivity());
-        //float scale = getResources().getDisplayMetrics().density;
-       // int dpAsPixels = (int) (5*scale + 0.5f); //25dp
-        //input.setWidth(dpAsPixels);
 
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
@@ -276,7 +286,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
                             PreferenceManager.getDefaultSharedPreferences(mContext)
                                     .edit()
-                                    .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, newTotal)
+                                    .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, newTotal)
                                     .commit();
                         } catch (Exception e) {
                             Toast.makeText(mContext, "No water amount was entered", Toast.LENGTH_SHORT);
@@ -297,7 +307,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     {
         final float waterTotalOZ =
                 PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, 0);
+                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0);
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -308,9 +318,6 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         // Set up the input
         final EditText input = new EditText(getActivity());
-        //float scale = getResources().getDisplayMetrics().density;
-        // int dpAsPixels = (int) (5*scale + 0.5f); //25dp
-        //input.setWidth(dpAsPixels);
 
         // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
@@ -327,7 +334,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
                             PreferenceManager.getDefaultSharedPreferences(mContext)
                                     .edit()
-                                    .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL, newTotal)
+                                    .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, newTotal)
                                     .commit();
                         } catch (Exception e) {
                             Toast.makeText(mContext, "No water amount was entered", Toast.LENGTH_SHORT);

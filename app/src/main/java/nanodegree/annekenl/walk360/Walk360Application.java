@@ -26,13 +26,13 @@ public class Walk360Application extends Application
         Log.d("application","oncreate");
 
         mActivityTracker = new ActivityTrackerHelper(this);
-        mActivityTracker.requestActivityTransitionUpdates();  //start with monitoring for "still start" transition
+        //mActivityTracker.requestActivityTransitionUpdates();  //start with monitoring for "still start" transition
     }
 
-    //public ActivityTrackerHelper getmActivityTracker()
-    //{
-        //return mActivityTracker;
-    //}
+    public ActivityTrackerHelper getmActivityTracker()
+    {
+        return mActivityTracker;
+    }
 
     @TargetApi(26)
     protected void checkForNewDay()
@@ -47,7 +47,6 @@ public class Walk360Application extends Application
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLLddyyyy");
             today += localDate.format(formatter);
         }
-
 
     }
 }

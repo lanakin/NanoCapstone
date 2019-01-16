@@ -26,10 +26,9 @@ public class ActivityDetectionIntentService extends IntentService
 {
     protected static final String TAG = "WALK360_USER_ACTIVITY";
 
-    //public static final String ACTIVE_MIN_GOAL_PROGRESS = "DETECTED_ACTIVITY_PROGRESS_360";
     //public static final int ACTIVITY_DETECTION_INTERVAL = 20; //20 seconds
 
-    private ActivityTrackerHelper mActivityTracker;
+    //private ActivityTrackerHelper mActivityTracker;
 
     //Call the super IntentService constructor with the name for the worker thread
     public ActivityDetectionIntentService()
@@ -89,55 +88,15 @@ public class ActivityDetectionIntentService extends IntentService
                 }
             } //check list of probable activities
 
-
-            //part of an idea to use activity detection to make sure a user was moving for 3 minutes
-           /*try
-            {
-                int activeTime = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                        .getInt(ActivityTrackerHelper.ACTIVE_MIN_GOAL_PROGRESS, 0);
-
-                if(activeTime < 180 && isMoving)  //180 SECONDS = 3 MINUTES
-                {
-                    activeTime += ActivityTrackerHelper.ACTIVITY_DETECTION_INTERVAL;
-                    //Toast.makeText(this, "Keep Going! Try to be active for 3 minutes.",
-                           // Toast.LENGTH_LONG).show();
-
-                    PreferenceManager.getDefaultSharedPreferences(this)
-                            .edit()
-                            .putInt(ActivityTrackerHelper.ACTIVE_MIN_GOAL_PROGRESS, activeTime)
-                            .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, test + " "
-                                    + Calendar.getInstance().getTime() + " " + activeTime)  //UI TEST
-                            .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY,true)
-                            .commit();
-                }
-                else if(activeTime >= 180) //stop active updates
-                {
-                    //Toast.makeText(this, "Good job! You have been active for at least 3 minutes.",
-                            //Toast.LENGTH_LONG).show();
-
-                    //START WAITING FOR TRANSITION BACK TO "STILL"//
-
-                    //mActivityTracker = new ActivityTrackerHelper(getApplicationContext());
-
-                    Walk360Application mApplication = (Walk360Application) getApplicationContext();
-                    mActivityTracker = mApplication.getmActivityTracker();
-
-                    mActivityTracker.stopActivityDetectionUpdates(); //is this working?  //maybe don't stop transitions - and let the next still start transition stop activity detection?
-
-                    //mActivityTracker.requestActivityTransitionUpdates(); //maybe only worry about stopping this at indicated time in settings?
-
-                    //UPDATE PROGRESS BAR TO FULL? NEED ONE LAST UI UPDATE UNTIL GO BACK TO "STILLNESS"
-                    PreferenceManager.getDefaultSharedPreferences(this)
-                            .edit()
-                            .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, test
-                                        + " " + Calendar.getInstance().getTime() + " " + activeTime)  //UI TEST
-                            .commit();
-
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }*/
         }
     }
+
+    /*public void getQuickRestartOfUserActivity()
+    {
+        stillStartTime = System.currentTimeMillis();  //wall time
+
+        transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track exact start of event for chronometer/duration
+
+        isActive
+    }*/
 }

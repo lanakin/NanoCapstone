@@ -50,8 +50,8 @@
         android:elevation="@dimen/fab_elevation"
         android:contentDescription="quick options"
         android:translationZ="6dp"
-         />
--->
+        android:src="@drawable/ic_track_toggle_24px"
+         />-->
 
 </android.support.constraint.ConstraintLayout>
 

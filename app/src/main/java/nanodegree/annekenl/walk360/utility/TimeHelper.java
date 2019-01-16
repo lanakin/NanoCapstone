@@ -8,6 +8,10 @@ public class TimeHelper
         return nanoseconds / 1000000;
     }
 
+    public static long millisecondsToNanoseconds(long milliseconds) {
+        return milliseconds * 1000000;
+    }
+
     public static long elapsedWallTimeMillisInMinutes(long startMillis)
     {
         long elapsedTime = System.currentTimeMillis() - startMillis;

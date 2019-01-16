@@ -46,8 +46,8 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
             String transTest = "";
             mContext = context;
 
-            boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
-                    .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
+            /*boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);*/
 
             List<ActivityTransitionEvent> transitionEvents = result.getTransitionEvents();
 
@@ -66,22 +66,22 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                         + " " + Calendar.getInstance().getTime() //wall time
                         + "\n";
 
-                PreferenceManager.getDefaultSharedPreferences(mContext)
+               /* PreferenceManager.getDefaultSharedPreferences(mContext)
                         .edit()
                         .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, transTest)
-                        .commit();
+                        .commit();*/
 
                 switch (mostRecentTransition.getActivityType())
                 {
                     //in testing, "less is more" it seems, to keep it simple and fast detection -still and walking usually fire together as well
                     case DetectedActivity.STILL:
-                        if ((mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                                && !isActive)  //only reset time if transition event away from inactivity
+                        if ((mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_EXIT))
+                                //&& !isActive)  //only reset time if transition event away from inactivity
                         {
                             handleUserIsActive();
                         }
-                        else if((mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                                && isActive) //only reset time if transition event away from activity
+                        else if((mostRecentTransition.getTransitionType() == ActivityTransition.ACTIVITY_TRANSITION_ENTER))
+                               // && isActive) //only reset time if transition event away from activity
                         {
                             handleUserIsInactive();
                         }
@@ -95,7 +95,7 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
     {
         long elapsedSitTime = getPreviousEventDurationTime();
         long prevMaxSitTime = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getLong(ActivityTrackerHelper.MAX_SITTING_TIME, 0);
+                .getLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, 0);
 
         if(elapsedSitTime > prevMaxSitTime)
         {
@@ -104,7 +104,7 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                     .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, 0)  //0 indicates still/inactive time has ended
                     .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos) //save new event time
                     .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, true)
-                    .putLong(ActivityTrackerHelper.MAX_SITTING_TIME, elapsedSitTime) //update max time
+                    .putLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, elapsedSitTime) //update max time
                     .commit();
         } else {
             PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -121,7 +121,7 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
     {
         long elapsedWalkTime = getPreviousEventDurationTime();
         long prevMaxWalkTime = PreferenceManager.getDefaultSharedPreferences(mContext)
-                .getLong(ActivityTrackerHelper.MAX_WALKING_TIME, 0);
+                .getLong(ActivityTrackerHelper.MAX_WALKING_TIME_KEY, 0);
 
         if(elapsedWalkTime > prevMaxWalkTime)
         {
@@ -130,7 +130,7 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                     .putLong(ActivityTrackerHelper.DETECTED_NON_ACTIVITY_KEY, stillStartTime)  //used to determine time in minutes
                     .putLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, transitionTimeNanos)
                     .putBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false)
-                    .putLong(ActivityTrackerHelper.MAX_WALKING_TIME, elapsedWalkTime) //update max time
+                    .putLong(ActivityTrackerHelper.MAX_WALKING_TIME_KEY, elapsedWalkTime) //update max time
                     .commit();
         } else {
             PreferenceManager.getDefaultSharedPreferences(mContext)
