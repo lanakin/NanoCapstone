@@ -29,9 +29,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
+import nanodegree.annekenl.walk360.firestore.FirestoreHelper;
 import nanodegree.annekenl.walk360.healthy_snacks.HealthySnacksScreenFragment;
 import nanodegree.annekenl.walk360.history.HistoryScreenFragment;
 import nanodegree.annekenl.walk360.settings.SettingsScreenFragment;
@@ -44,6 +47,7 @@ import nanodegree.annekenl.walk360.water.WaterCalculatorScreenFragment;
 public class MainActivity extends AppCompatActivity
 {
     public static final String AUTH_STATUS_KEY = "AUTH_STATUS_KEY";
+    public static final String AUTH_USERID_KEY = "AUTH_USERID_KEY";
     public static final String TRACK_STATUS_KEY = "TRACK_STATUS_KEY";
 
     public final static String CHANNEL_ID = "TIME_TO_MOVE";
@@ -61,16 +65,18 @@ public class MainActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
 
+        checkGooglePlayServiceAvailability();
+
         //sign-in
         boolean isSignedIn = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(AUTH_STATUS_KEY, false);
 
-        if(!isSignedIn)
+        if(!isSignedIn) {
             authenticate();
+        }
 
-        checkGooglePlayServiceAvailability();
-        createNotificationChannel();
         checkForDataStoreAndReset();
+        createNotificationChannel();
 
     }
 
@@ -79,9 +85,19 @@ public class MainActivity extends AppCompatActivity
 
         super.onResume();
 
+        boolean isSignedIn = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(AUTH_STATUS_KEY, false);
+
+        if(!isSignedIn)
+            authenticate();
+
         checkGooglePlayServiceAvailability();
         createNotificationChannel(); //if already exists, does nothing
         checkForDataStoreAndReset();
+
+        /*FirestoreHelper mFirestoreHelper = new FirestoreHelper();
+        mFirestoreHelper.testAddWithID("Sun");
+        mFirestoreHelper.testReadWithID("Sun");*/
     }
 
     @Override
@@ -90,14 +106,41 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private void checkForDataStoreAndReset()
+    public void checkForDataStoreAndReset()
     {
-        if(isANewDay())
+        if(isANewDay())  //stored into firebase the previous day's data**
         {
-            //stored into firebase the previous day's data**
-                //~async
+            FirestoreHelper mFirestoreHelper = new FirestoreHelper();
 
-            //reset current day local data
+            //documents
+            String theUserID = PreferenceManager.getDefaultSharedPreferences(this)
+                    .getString(AUTH_USERID_KEY, "");
+            if(theUserID.isEmpty()) {
+                //alert error - and authenticate... to do later test if this is needed
+                theUserID = "error";
+            }
+
+            String theDayID = "error";
+            String tempDayStr = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(Walk360Application.TODAY_STR_KEY, "");
+            String tempParts[] = tempDayStr.split(" "); //"Thu 01/17"
+            if(tempParts.length > 0)
+                theDayID = tempParts[0];
+
+            //data to store (to do later - possibly use a custom object instead)
+            Map<String, Object> yesterdayData = new HashMap<>();
+            yesterdayData.put("date_str", PreferenceManager.getDefaultSharedPreferences(this)
+                    .getString(Walk360Application.TODAY_STR_KEY, ""));
+            yesterdayData.put("max_walk",PreferenceManager.getDefaultSharedPreferences(this)
+                    .getLong(ActivityTrackerHelper.MAX_WALKING_TIME_KEY, 0));
+            yesterdayData.put("max_sit", PreferenceManager.getDefaultSharedPreferences(this)
+                    .getLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, 0));
+            yesterdayData.put("water_total", PreferenceManager.getDefaultSharedPreferences(this)
+                    .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0));
+
+            mFirestoreHelper.storeADailyTotals(theUserID,theDayID,yesterdayData);
+
+            //reset local data for current day
             PreferenceManager.getDefaultSharedPreferences(this)
                     .edit()
                     .putLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, 0)
@@ -236,7 +279,7 @@ public class MainActivity extends AppCompatActivity
             builder = new AlertDialog.Builder(this);
         }
         builder.setTitle("Log Out")
-                .setMessage("Are you sure you want to log out?")
+                .setMessage("Are you sure you want to log out? The app will close and you must sign in again later.")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         AuthUI.getInstance()
@@ -247,8 +290,11 @@ public class MainActivity extends AppCompatActivity
                                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                                                 .edit()
                                                 .putBoolean(AUTH_STATUS_KEY, false)
+                                                //.putString(AUTH_USERID_KEY, "") //will only overwrite with new authenticated user
                                                 .commit();
                                         mUser = null;
+
+                                        finish(); //close app - current design i need an unique user to save data for in firebase - perhaps in future switch to a local database instead
                                     }
                                 });
                     }
@@ -287,12 +333,14 @@ public class MainActivity extends AppCompatActivity
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
+                mUser = FirebaseAuth.getInstance().getCurrentUser();
+                Log.d("myfirstore","user id: "+mUser.getUid());
+
                 PreferenceManager.getDefaultSharedPreferences(this)
                         .edit()
+                        .putString(AUTH_USERID_KEY, mUser.getUid())
                         .putBoolean(AUTH_STATUS_KEY, true)
                         .commit();
-
-                mUser = FirebaseAuth.getInstance().getCurrentUser();
 
             } else {
                 // Sign in failed. If response is null the user canceled the
@@ -381,56 +429,5 @@ public class MainActivity extends AppCompatActivity
                 //.addToBackStack(null) //no specific name
                 .commit();
     }
-
-
-     /*  // Access a Cloud Firestore instance from your Activity
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
-        // With this change, timestamps stored in Cloud Firestore will be read back as
-        // com.google.firebase.Timestamp objects instead of as system java.util.Date objects.
-        // So you will also need to update code expecting a java.util.Date to instead expect a Timestamp.
-        FirebaseFirestore.setLoggingEnabled(true);
-
-        // Create a new user with a first and last name
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("middle","susan");
-        user.put("last", "Lovelace");
-        user.put("born", 1815);
-
-        // Add a new document with a generated ID
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("firestore", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("firestore", "Error adding document", e);
-                    }
-                });
-
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("firestore", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w("firestore", "Error getting documents.", task.getException());
-                        }
-                    }
-                });*/
 
 }

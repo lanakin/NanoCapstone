@@ -10,7 +10,7 @@ import nanodegree.annekenl.walk360.utility.TimeHelper;
 
 public class Walk360Application extends Application
 {
-    private ActivityTrackerHelper mActivityTracker; //or a singleton?
+    private ActivityTrackerHelper mActivityTracker; //~
 
     public static final String TODAY_STR_KEY = "TODAY_STR_KEY";
 
@@ -45,7 +45,7 @@ public class Walk360Application extends Application
         if(check.isEmpty()) {
             PreferenceManager.getDefaultSharedPreferences(this)
                     .edit()
-                    .putString(TODAY_STR_KEY, today)
+                    .putString(TODAY_STR_KEY, today) //can add test string here
                     .commit();
 
             Log.d("application","today string first set");

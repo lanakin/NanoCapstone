@@ -108,6 +108,8 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         PreferenceManager.getDefaultSharedPreferences(mContext)
                 .registerOnSharedPreferenceChangeListener(this);
 
+        ((MainActivity) getActivity()).checkForDataStoreAndReset(); //~
+
         updateChronometer();
         updateMaxTimesTVs();
         updateWaterTotalTV();
