@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -24,10 +23,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
@@ -101,16 +96,8 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     {
         super.onViewCreated(view, savedInstanceState);
 
-        String today = "";
-        if(VERSION.SDK_INT <= 25) {
-           Calendar calendarDate = Calendar.getInstance();
-           SimpleDateFormat formatter = new SimpleDateFormat("MM dd, yyyy");
-           today += formatter.format(calendarDate);
-        } else {
-            LocalDate localDate = LocalDate.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
-            today += localDate.format(formatter);
-        }
+        String today = PreferenceManager.getDefaultSharedPreferences(mContext)
+            .getString(Walk360Application.TODAY_STR_KEY, "");
         mDate.setText(today);
     }
 
@@ -254,12 +241,10 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
 
     /** to do later - store text in strings.xml & possibly combine these methods **/
-
     private void addWaterAmt()
     {
-        final float waterTotalOZ =
-                PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0);
+        final float waterTotalOZ = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0);
 
         AlertDialog.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

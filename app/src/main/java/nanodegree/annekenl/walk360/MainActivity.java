@@ -31,9 +31,11 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
+import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
 import nanodegree.annekenl.walk360.healthy_snacks.HealthySnacksScreenFragment;
 import nanodegree.annekenl.walk360.history.HistoryScreenFragment;
 import nanodegree.annekenl.walk360.settings.SettingsScreenFragment;
+import nanodegree.annekenl.walk360.utility.TimeHelper;
 import nanodegree.annekenl.walk360.water.WaterCalculatorScreenFragment;
 
 // references:
@@ -59,57 +61,6 @@ public class MainActivity extends AppCompatActivity
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
 
-
-      /*  // Access a Cloud Firestore instance from your Activity
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        db.setFirestoreSettings(settings);
-        // With this change, timestamps stored in Cloud Firestore will be read back as
-        // com.google.firebase.Timestamp objects instead of as system java.util.Date objects.
-        // So you will also need to update code expecting a java.util.Date to instead expect a Timestamp.
-        FirebaseFirestore.setLoggingEnabled(true);
-
-        // Create a new user with a first and last name
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("middle","susan");
-        user.put("last", "Lovelace");
-        user.put("born", 1815);
-
-        // Add a new document with a generated ID
-        db.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("firestore", "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("firestore", "Error adding document", e);
-                    }
-                });
-
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("firestore", document.getId() + " => " + document.getData());
-                            }
-                        } else {
-                            Log.w("firestore", "Error getting documents.", task.getException());
-                        }
-                    }
-                });*/
-
         //sign-in
         boolean isSignedIn = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(AUTH_STATUS_KEY, false);
@@ -119,6 +70,7 @@ public class MainActivity extends AppCompatActivity
 
         checkGooglePlayServiceAvailability();
         createNotificationChannel();
+        checkForDataStoreAndReset();
 
     }
 
@@ -129,12 +81,53 @@ public class MainActivity extends AppCompatActivity
 
         checkGooglePlayServiceAvailability();
         createNotificationChannel(); //if already exists, does nothing
+        checkForDataStoreAndReset();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
     }
+
+
+    private void checkForDataStoreAndReset()
+    {
+        if(isANewDay())
+        {
+            //stored into firebase the previous day's data**
+                //~async
+
+            //reset current day local data
+            PreferenceManager.getDefaultSharedPreferences(this)
+                    .edit()
+                    .putLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, 0)
+                    .putLong(ActivityTrackerHelper.MAX_WALKING_TIME_KEY, 0)
+                    .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0)
+                    .putString(Walk360Application.TODAY_STR_KEY, TimeHelper.getTodayStr())
+                    .commit();
+        }
+
+    }
+
+    public boolean isANewDay()
+    {
+        String storedDayStr = PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(Walk360Application.TODAY_STR_KEY, "");
+
+        String currDayStr = TimeHelper.getTodayStr();
+
+        boolean ret;
+
+        if(currDayStr.equals(storedDayStr)) {
+            ret = false;
+        }
+        else {
+            ret = true;
+        }
+
+        return ret;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -179,13 +172,14 @@ public class MainActivity extends AppCompatActivity
             builder = new AlertDialog.Builder(this);
         }
         builder.setTitle("Activity Tracking")
-                .setMessage("Do you want the app to start tracking activity?"  +
-                        "\n\n Note: It may take a minute or two for your device to detect walking activity.")
+                .setMessage("Do you want the app to start tracking activity?"
+                        +"\n\n Note: It may initially take a minute or two for your device to detect walking activity."
+                        +"\n\n Activity Tracking can also be managed by navigating to the Settings Tab.")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //requestActivitytrans
                         try {
-                            Walk360Application mApplication = (Walk360Application) getApplicationContext();
+                            Walk360Application mApplication = (Walk360Application) getApplication();
                             mApplication.getmActivityTracker().requestActivityTransitionUpdates();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -210,12 +204,13 @@ public class MainActivity extends AppCompatActivity
             builder = new AlertDialog.Builder(this);
         }
         builder.setTitle("Activity Tracking")
-                .setMessage("Do you want the app to stop tracking walking activity?")
+                .setMessage("Do you want the app to stop tracking walking activity?"
+                        +"\n\n Activity Tracking can also be managed by navigating to the Settings Tab.")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //stopActivityTrans
                         try {
-                            Walk360Application mApplication = (Walk360Application) getApplicationContext();
+                            Walk360Application mApplication = (Walk360Application) getApplication();
                             mApplication.getmActivityTracker().stopActivityTransitionUpdates();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -386,5 +381,56 @@ public class MainActivity extends AppCompatActivity
                 //.addToBackStack(null) //no specific name
                 .commit();
     }
+
+
+     /*  // Access a Cloud Firestore instance from your Activity
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        db.setFirestoreSettings(settings);
+        // With this change, timestamps stored in Cloud Firestore will be read back as
+        // com.google.firebase.Timestamp objects instead of as system java.util.Date objects.
+        // So you will also need to update code expecting a java.util.Date to instead expect a Timestamp.
+        FirebaseFirestore.setLoggingEnabled(true);
+
+        // Create a new user with a first and last name
+        Map<String, Object> user = new HashMap<>();
+        user.put("first", "Ada");
+        user.put("middle","susan");
+        user.put("last", "Lovelace");
+        user.put("born", 1815);
+
+        // Add a new document with a generated ID
+        db.collection("users")
+                .add(user)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d("firestore", "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("firestore", "Error adding document", e);
+                    }
+                });
+
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("firestore", document.getId() + " => " + document.getData());
+                            }
+                        } else {
+                            Log.w("firestore", "Error getting documents.", task.getException());
+                        }
+                    }
+                });*/
 
 }
