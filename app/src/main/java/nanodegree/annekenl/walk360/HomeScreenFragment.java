@@ -39,7 +39,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     private TextView walkingMaxTV;
     private TextView waterTotalTV;
     private Button addWater;
-    private Button subWater; //allow user to undo a mistaken amt.
+    private Button subWater; //basically to allow user to undo a mistaken amt.
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -69,7 +69,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         sittingMaxTV = rootView.findViewById(R.id.sitting_max);
         walkingMaxTV = rootView.findViewById(R.id.walking_max);
-        waterTotalTV = rootView.findViewById(R.id.waterTotal);
+        waterTotalTV = rootView.findViewById(R.id.water_total);
         addWater = rootView.findViewById(R.id.waterButton);
         subWater = rootView.findViewById(R.id.waterButtonSub);
 
@@ -92,13 +92,8 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
     @TargetApi(26)
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        String today = PreferenceManager.getDefaultSharedPreferences(mContext)
-            .getString(Walk360Application.TODAY_STR_KEY, "");
-        mDate.setText(today);
     }
 
     @Override
@@ -108,8 +103,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         PreferenceManager.getDefaultSharedPreferences(mContext)
                 .registerOnSharedPreferenceChangeListener(this);
 
-        ((MainActivity) getActivity()).checkForDataStoreAndReset(); //~
-
+        updateDateTV();
         updateChronometer();
         updateMaxTimesTVs();
         updateWaterTotalTV();
@@ -209,6 +203,12 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         waterTotalTV.setText("Today's Total: "+String.format("%.2f",waterTotalOZ) + " ounces" + " (" + String.format("%.2f", waterTotalCups) + " cups)");
     }
 
+    private void updateDateTV()
+    {
+        String today = PreferenceManager.getDefaultSharedPreferences(mContext)
+                .getString(Walk360Application.TODAY_STR_KEY, "");
+        mDate.setText(today);
+    }
 
   /*  private void updateTestTV()
     {
@@ -238,6 +238,9 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         //}
         else if(s.equals(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY)) {
             updateWaterTotalTV();
+        }
+        else if(s.equals(Walk360Application.TODAY_STR_KEY)) {
+            updateDateTV();
         }
     }
 

@@ -64,20 +64,6 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
-
-        checkGooglePlayServiceAvailability();
-
-        //sign-in
-        boolean isSignedIn = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(AUTH_STATUS_KEY, false);
-
-        if(!isSignedIn) {
-            authenticate();
-        }
-
-        checkForDataStoreAndReset();
-        createNotificationChannel();
-
     }
 
     @Override
@@ -88,16 +74,15 @@ public class MainActivity extends AppCompatActivity
         boolean isSignedIn = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(AUTH_STATUS_KEY, false);
 
-        if(!isSignedIn)
-            authenticate();
-
         checkGooglePlayServiceAvailability();
-        createNotificationChannel(); //if already exists, does nothing
-        checkForDataStoreAndReset();
 
-        /*FirestoreHelper mFirestoreHelper = new FirestoreHelper();
-        mFirestoreHelper.testAddWithID("Sun");
-        mFirestoreHelper.testReadWithID("Sun");*/
+        if(!isSignedIn) {
+            authenticate();
+        } else {
+            checkForDataStoreAndReset();
+        }
+
+        createNotificationChannel(); //if already exists, does nothing
     }
 
     @Override
@@ -105,51 +90,58 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
     }
 
-
-    public void checkForDataStoreAndReset()
+    protected void checkForDataStoreAndReset()
     {
-        if(isANewDay())  //stored into firebase the previous day's data**
-        {
-            FirestoreHelper mFirestoreHelper = new FirestoreHelper();
+        boolean isSignedIn = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(AUTH_STATUS_KEY, false);
 
-            //documents
-            String theUserID = PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString(AUTH_USERID_KEY, "");
-            if(theUserID.isEmpty()) {
-                //alert error - and authenticate... to do later test if this is needed
-                theUserID = "error";
+        if(!isSignedIn) {
+            authenticate();
+        } else {
+            if(isANewDay())  //stored into firebase the previous day's data**
+            {
+                FirestoreHelper mFirestoreHelper = new FirestoreHelper();
+
+                //documents
+                String theUserID = PreferenceManager.getDefaultSharedPreferences(this)
+                        .getString(AUTH_USERID_KEY, "");
+                if (theUserID.isEmpty()) {
+                    //alert error - and authenticate... to do later test if this is needed
+                    theUserID = "error";
+                }
+
+                String theDayID = "error";
+                String tempDayStr = PreferenceManager.getDefaultSharedPreferences(this)
+                        .getString(Walk360Application.TODAY_STR_KEY, "");
+                String tempParts[] = tempDayStr.split(" "); //"Thu 01/17"
+                if (tempParts.length > 0)
+                    theDayID = tempParts[0];
+
+                //data to store (to do later - possibly use a custom object instead)
+                Map<String, Object> yesterdayData = new HashMap<>();
+                yesterdayData.put("date_str", PreferenceManager.getDefaultSharedPreferences(this)
+                        .getString(Walk360Application.TODAY_STR_KEY, ""));
+                yesterdayData.put("max_walk", PreferenceManager.getDefaultSharedPreferences(this)
+                        .getLong(ActivityTrackerHelper.MAX_WALKING_TIME_KEY, 0));
+                yesterdayData.put("max_sit", PreferenceManager.getDefaultSharedPreferences(this)
+                        .getLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, 0));
+                yesterdayData.put("water_total", PreferenceManager.getDefaultSharedPreferences(this)
+                        .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0));
+
+                mFirestoreHelper.storeADailyTotals(theUserID, theDayID, yesterdayData);
+
+                //reset local data for current day
+                PreferenceManager.getDefaultSharedPreferences(this)
+                        .edit()
+                        .putLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, 0)
+                        .putLong(ActivityTrackerHelper.MAX_WALKING_TIME_KEY, 0)
+                        .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0)
+                        .putString(Walk360Application.TODAY_STR_KEY, TimeHelper.getTodayStr())
+                        .commit();
+
+                Toast.makeText(this, "Daily Totals reset for a new day!", Toast.LENGTH_SHORT);
             }
-
-            String theDayID = "error";
-            String tempDayStr = PreferenceManager.getDefaultSharedPreferences(this)
-                .getString(Walk360Application.TODAY_STR_KEY, "");
-            String tempParts[] = tempDayStr.split(" "); //"Thu 01/17"
-            if(tempParts.length > 0)
-                theDayID = tempParts[0];
-
-            //data to store (to do later - possibly use a custom object instead)
-            Map<String, Object> yesterdayData = new HashMap<>();
-            yesterdayData.put("date_str", PreferenceManager.getDefaultSharedPreferences(this)
-                    .getString(Walk360Application.TODAY_STR_KEY, ""));
-            yesterdayData.put("max_walk",PreferenceManager.getDefaultSharedPreferences(this)
-                    .getLong(ActivityTrackerHelper.MAX_WALKING_TIME_KEY, 0));
-            yesterdayData.put("max_sit", PreferenceManager.getDefaultSharedPreferences(this)
-                    .getLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, 0));
-            yesterdayData.put("water_total", PreferenceManager.getDefaultSharedPreferences(this)
-                    .getFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0));
-
-            mFirestoreHelper.storeADailyTotals(theUserID,theDayID,yesterdayData);
-
-            //reset local data for current day
-            PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit()
-                    .putLong(ActivityTrackerHelper.MAX_SITTING_TIME_KEY, 0)
-                    .putLong(ActivityTrackerHelper.MAX_WALKING_TIME_KEY, 0)
-                    .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, 0)
-                    .putString(Walk360Application.TODAY_STR_KEY, TimeHelper.getTodayStr())
-                    .commit();
         }
-
     }
 
     public boolean isANewDay()
@@ -341,6 +333,8 @@ public class MainActivity extends AppCompatActivity
                         .putString(AUTH_USERID_KEY, mUser.getUid())
                         .putBoolean(AUTH_STATUS_KEY, true)
                         .commit();
+
+                checkForDataStoreAndReset();
 
             } else {
                 // Sign in failed. If response is null the user canceled the

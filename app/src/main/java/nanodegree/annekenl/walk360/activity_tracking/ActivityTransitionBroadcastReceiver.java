@@ -19,7 +19,6 @@ import com.google.android.gms.location.ActivityTransitionEvent;
 import com.google.android.gms.location.ActivityTransitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
-import java.util.Calendar;
 import java.util.List;
 
 import nanodegree.annekenl.walk360.alarm_manager.AlarmManagerHelper;
@@ -61,10 +60,10 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                 transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track exact start of event for chronometer/duration
 
                 //test
-                transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
+                /*transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
                         + " " + ActivityTrackerHelper.activityTransitionTypeToString(mContext, mostRecentTransition.getTransitionType())
                         + " " + Calendar.getInstance().getTime() //wall time
-                        + "\n";
+                        + "\n";*/
 
                /* PreferenceManager.getDefaultSharedPreferences(mContext)
                         .edit()

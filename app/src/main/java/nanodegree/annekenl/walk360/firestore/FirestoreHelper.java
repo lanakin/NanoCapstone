@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -16,6 +17,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import nanodegree.annekenl.walk360.data.SingleDayTotals;
 
 /* https://github.com/GoogleCloudPlatform/java-docs-samples/
 blob/6cff4eba061d963d64fec027dc545ea39262b110/firestore/src/
@@ -29,9 +32,17 @@ public class FirestoreHelper
     //public static final String USER_FIREDOC_KEY = "USER_FIREDOC_KEY";
 
     private  FirebaseFirestore db;
+    private OnDailyTotalsReadFinished readFinishedListener;
+    //private HashMap<String, SingleDayTotals> mDailyTotalsData = new HashMap<>();
+
 
     public FirestoreHelper() {
         getDatabase();
+    }
+
+    public FirestoreHelper(OnDailyTotalsReadFinished listener) {
+        getDatabase();
+        readFinishedListener = listener;
     }
 
     private void getDatabase()
@@ -47,6 +58,42 @@ public class FirestoreHelper
         // com.google.firebase.Timestamp objects instead of as system java.util.Date objects.
         // So you will also need to update code expecting a java.util.Date to instead expect a Timestamp.
         FirebaseFirestore.setLoggingEnabled(true);
+    }
+
+
+    public interface OnDailyTotalsReadFinished
+    {
+        void onDailyTotalsReadFinished();  //HashMap<String, SingleDayTotals> resultData
+    }
+
+    public void readDailyTotals(String theUserID, final HashMap<String, SingleDayTotals> mDailyTotalsData)
+    {
+        CollectionReference dailyTotalsRef = db
+                .collection(USERS_COLLECTION_FIREDB).document(theUserID)
+                .collection(ACTIVITY_TOTALS_COLLECTION_FIREDB);
+
+        dailyTotalsRef
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            for (QueryDocumentSnapshot document : task.getResult())
+                            {
+                                Log.d("myfirestore", document.getId() + " => " + document.getData());
+
+                                SingleDayTotals currSingleDayTotals = document.toObject(SingleDayTotals.class);
+                                mDailyTotalsData.put(document.getId(),currSingleDayTotals);
+                            }
+                        }
+                        else {
+                            Log.w("myfirestore", "Error getting documents.", task.getException());
+                        }
+                        readFinishedListener.onDailyTotalsReadFinished();
+                    }
+                });
     }
 
 
@@ -150,7 +197,7 @@ public class FirestoreHelper
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("myfirestore", document.getId() + " => " + document.getData());
-                                //testDelete(document.getId());  //test deleted all 'test data'
+                                //testDeleteWithID(document.getId());  //test deleted all 'test data'
                             }
                         } else {
                             Log.w("myfirestore", "Error getting documents.", task.getException());
