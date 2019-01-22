@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity
                     theUserID = "error";
                 }
 
+                     //the three letter abbreviation of the day is the key for weekday "row"/document in firestore db
+                        // - later might want to change this so that it doesn't depend on USA spellings/Locale
                 String theDayID = "error";
                 String tempDayStr = PreferenceManager.getDefaultSharedPreferences(this)
                         .getString(Walk360Application.TODAY_STR_KEY, "");
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity
                 if (tempParts.length > 0)
                     theDayID = tempParts[0];
 
-                //data to store (to do later - possibly use a custom object instead)
+                //data to store
                 Map<String, Object> yesterdayData = new HashMap<>();
                 yesterdayData.put("date_str", PreferenceManager.getDefaultSharedPreferences(this)
                         .getString(Walk360Application.TODAY_STR_KEY, ""));

@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 import nanodegree.annekenl.walk360.MainActivity;
 import nanodegree.annekenl.walk360.R;
+import nanodegree.annekenl.walk360.utility.TimeHelper;
 
 public class ActivityTrackerHelper
 {
@@ -62,15 +64,16 @@ public class ActivityTrackerHelper
                     @Override
                     public void onSuccess(Object o) {
                         Log.i("activityhelper", "Transitions successfully registered.");
-                        //start back at still/inactive (if and once a walking event occurs - will re-write with new values)
-                        //long currRealTimeNanos = TimeHelper.millisecondsToNanoseconds(SystemClock.elapsedRealtime()); //activity transition's time result is in real-time nanoseconds*chronometer is expecting this
-                        //long currWallTime = System.currentTimeMillis();  //wall time
+
+                        long currRealTimeNanos = TimeHelper.millisecondsToNanoseconds(SystemClock.elapsedRealtime());
+                        //activity transition's time result is in real-time nanoseconds*chronometer is expecting this
+                        long currWallTime = System.currentTimeMillis();  //wall time
 
                         PreferenceManager.getDefaultSharedPreferences(mContext)
                                 .edit()
-                                //.putBoolean(IS_ACTIVE_KEY, false)
-                                //.putLong(CHRONOMETER_EVENT_START_KEY, currRealTimeNanos)
-                                //.putLong(DETECTED_NON_ACTIVITY_KEY, currWallTime)
+                                .putBoolean(IS_ACTIVE_KEY, false)
+                                .putLong(CHRONOMETER_EVENT_START_KEY, currRealTimeNanos)
+                                .putLong(DETECTED_NON_ACTIVITY_KEY, currWallTime)
                                 .putBoolean(MainActivity.TRACK_STATUS_KEY, true)
                                 .commit();
                     }

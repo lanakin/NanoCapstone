@@ -108,4 +108,15 @@
     <string name="water_sub_btn_label">- Water Intake</string>
 
     <string name="user_track">Toggle Activity Tracking</string>
+
+    <!-- the three letter abbreviation of the day is the key for weekday "row"/document in firestore db;
+      later might want to change this so that it doesn't depend on USA spellings/Locale -->
+    <string name="mon_string_key" translatable="false">Mon</string>
+    <string name="tue_string_key" translatable="false">Tue</string>
+    <string name="wed_string_key" translatable="false">Wed</string>
+    <string name="thu_string_key" translatable="false">Thu</string>
+    <string name="fri_string_key" translatable="false">Fri</string>
+    <string name="sat_string_key" translatable="false">Sat</string>
+    <string name="sun_string_key" translatable="false">Sun</string>
+    <string name="not_available">N/A</string>
 </resources>

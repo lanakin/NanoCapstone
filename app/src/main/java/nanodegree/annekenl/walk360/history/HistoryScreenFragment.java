@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -20,12 +21,12 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import nanodegree.annekenl.walk360.MainActivity;
 import nanodegree.annekenl.walk360.R;
 import nanodegree.annekenl.walk360.data.SingleDayTotals;
 import nanodegree.annekenl.walk360.firestore.FirestoreHelper;
+import nanodegree.annekenl.walk360.utility.TimeHelper;
 
 /*mpandroid graph tutorial reference:
 https://blog.fossasia.org/plot-a-horizontal-bar-graph-using-mpandroidchart-library-in-susi-ai-android-app/ */
@@ -37,7 +38,7 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
 
     private FirestoreHelper mFirestoreHelper;
     private HashMap<String, SingleDayTotals> mDailyTotalsData;
-
+    private ProgressBar mProgressBar;
 
     public HistoryScreenFragment() { }
 
@@ -51,8 +52,6 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
         mFirestoreHelper = new FirestoreHelper(this);
         mDailyTotalsData = new HashMap<>();
         setupDefaultBlankData();
-
-        readInDailyTotalsData();
     }
 
     @Override
@@ -62,13 +61,11 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
         View rootView = inflater.inflate(R.layout.history_screen_layout, container, false);
 
         mSittingChart= rootView.findViewById(R.id.sitting_chart);
-        //setBarChart(mSittingChart);
-
         mWalkingChart= rootView.findViewById(R.id.walking_chart);
-        //setBarChart(mWalkingChart);
-
         mWaterChart= rootView.findViewById(R.id.water_chart);
-        //setBarChart(mWaterChart);
+        mProgressBar=rootView.findViewById(R.id.progressbar);
+
+        readInDailyTotalsData();
 
         return rootView;
     }
@@ -76,26 +73,33 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
     private void setupDefaultBlankData()
     {
         SingleDayTotals satData
-                = new SingleDayTotals("Sat N/A",0,0,0);
-        mDailyTotalsData.put("Sat", satData);
+                = new SingleDayTotals(getString(R.string.sat_string_key)+" "+getString(R.string.not_available),  //android.support.v4.app.Fragment, you can just call getString(R.string.mystring) directly.
+                0,0,0);
+        mDailyTotalsData.put(getString(R.string.sat_string_key), satData);
 
-        SingleDayTotals friData = new SingleDayTotals("Fri N/A",0,0,0);
-        mDailyTotalsData.put("Fri", friData);
+        SingleDayTotals friData = new SingleDayTotals(getString(R.string.fri_string_key)+" "+getString(R.string.not_available),
+                0,0,0);
+        mDailyTotalsData.put(getString(R.string.fri_string_key), friData);
 
-        SingleDayTotals thurData  = new SingleDayTotals("Thur N/A",0,0,0);
-        mDailyTotalsData.put("Thur", thurData);
+        SingleDayTotals thurData = new SingleDayTotals(getString(R.string.thu_string_key)+" "+getString(R.string.not_available),
+                0,0,0);
+        mDailyTotalsData.put(getString(R.string.thu_string_key), thurData);
 
-        SingleDayTotals wedData  = new SingleDayTotals("Wed N/A",0,0,0);
-        mDailyTotalsData.put("Wed", wedData);
+        SingleDayTotals wedData = new SingleDayTotals(getString(R.string.wed_string_key)+" "+getString(R.string.not_available),
+                0,0,0);
+        mDailyTotalsData.put(getString(R.string.wed_string_key), wedData);
 
-        SingleDayTotals tueData  = new SingleDayTotals("Tue N/A",0,0,0);
-        mDailyTotalsData.put("Tue", tueData);
+        SingleDayTotals tueData = new SingleDayTotals(getString(R.string.tue_string_key)+" "+getString(R.string.not_available),
+                0,0,0);
+        mDailyTotalsData.put(getString(R.string.tue_string_key), tueData);
 
-        SingleDayTotals monData  = new SingleDayTotals("Mon N/A",0,0,0);
-        mDailyTotalsData.put("Mon", monData);
+        SingleDayTotals monData = new SingleDayTotals(getString(R.string.mon_string_key)+" "+getString(R.string.not_available),
+                0,0,0);
+        mDailyTotalsData.put(getString(R.string.mon_string_key), monData);
 
-        SingleDayTotals sunData = new SingleDayTotals("Sun N/A",0,0,0);
-        mDailyTotalsData.put("Sun", sunData);
+        SingleDayTotals sunData = new SingleDayTotals(getString(R.string.sun_string_key)+" "+getString(R.string.not_available),
+                0,0,0);
+        mDailyTotalsData.put(getString(R.string.sun_string_key), sunData);
     }
 
     private void readInDailyTotalsData()
@@ -107,9 +111,8 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
             theUserID = "error";
         }
 
+        mProgressBar.setVisibility(View.VISIBLE);
         mFirestoreHelper.readDailyTotals(theUserID,mDailyTotalsData);
-
-
     }
 
     @Override
@@ -121,6 +124,8 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
             setSittingBarChart(mSittingChart);
             setWalkingBarChart(mWalkingChart);
             setWaterBarChart(mWaterChart);
+
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -261,14 +266,14 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
     //set labels
     private void setLabels(XAxis xAxis)
     {
-        String[] labels = new String[mDailyTotalsData.size()];
-        labels[0]= mDailyTotalsData.get("Sat").getDate_str();  //"Sat 1/12";
-        labels[1]= mDailyTotalsData.get("Fri").getDate_str(); //"Fri 1/11";
-        labels[2]= mDailyTotalsData.get("Thur").getDate_str(); //"Thur 1/10";
-        labels[3]= mDailyTotalsData.get("Wed").getDate_str();  //"Wed 1/09";
-        labels[4]= mDailyTotalsData.get("Tue").getDate_str(); //"Tue 1/08";
-        labels[5]= mDailyTotalsData.get("Mon").getDate_str(); //"Mon 1/08";
-        labels[6]= mDailyTotalsData.get("Sun").getDate_str();  //"Sun 1/13";
+        String[] labels = new String[7];  //mDailyTotalsData.size()
+        labels[0]= mDailyTotalsData.get(getString(R.string.sat_string_key)).getDate_str();  //"Sat 1/12";
+        labels[1]= mDailyTotalsData.get(getString(R.string.fri_string_key)).getDate_str(); //"Fri 1/11";
+        labels[2]= mDailyTotalsData.get(getString(R.string.thu_string_key)).getDate_str(); //"Thu 1/10";
+        labels[3]= mDailyTotalsData.get(getString(R.string.wed_string_key)).getDate_str();  //"Wed 1/09";
+        labels[4]= mDailyTotalsData.get(getString(R.string.tue_string_key)).getDate_str(); //"Tue 1/08";
+        labels[5]= mDailyTotalsData.get(getString(R.string.mon_string_key)).getDate_str(); //"Mon 1/08";
+        labels[6]= mDailyTotalsData.get(getString(R.string.sun_string_key)).getDate_str();  //"Sun 1/13";
 
         xAxis.setLabelCount(labels.length);
 
@@ -296,20 +301,38 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
      *
      * Set the colors for different bars and the bar width of the bars.
      */
-    private void setWalkingGraphData(BarChart barChart) {
-
-       long satMinutes = TimeUnit.MILLISECONDS.toMinutes(mDailyTotalsData.get("Sat").getMax_walk())
-                - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(mDailyTotalsData.get("Sat").getMax_walk()));
-
-        //Add a list of bar entries
+    private void setWalkingGraphData(BarChart barChart)
+    {
         ArrayList<BarEntry> entries = new ArrayList();
-        entries.add(new BarEntry(0, satMinutes));
-        entries.add(new BarEntry(1, 99));
-        entries.add(new BarEntry(2, 65));
-        entries.add(new BarEntry(3, 17));
-        entries.add(new BarEntry(4, 93));
-        entries.add(new BarEntry(5, 73));
-        entries.add(new BarEntry(6, 83));
+
+        try {
+            long satMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.sat_string_key)).getMax_walk());
+
+            long friMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.fri_string_key)).getMax_walk());
+
+            long thurMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.thu_string_key)).getMax_walk());
+
+            long wedMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.wed_string_key)).getMax_walk());
+
+            long tueMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.tue_string_key)).getMax_walk());
+
+            long monMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.mon_string_key)).getMax_walk());
+
+            long sunMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.sun_string_key)).getMax_walk());
+
+            //Add a list of bar entries
+            entries.add(new BarEntry(0, satMinutes));
+            entries.add(new BarEntry(1, friMinutes));
+            entries.add(new BarEntry(2, thurMinutes));
+            entries.add(new BarEntry(3, wedMinutes));
+            entries.add(new BarEntry(4, tueMinutes));
+            entries.add(new BarEntry(5, monMinutes));
+            entries.add(new BarEntry(6, sunMinutes));
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         //Note : These entries can be replaced by real-time data, say, from an API
 
@@ -343,17 +366,40 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
      *
      * Set the colors for different bars and the bar width of the bars.
      */
-    private void setSittingGraphData(BarChart barChart) {
-
-        //Add a list of bar entries
+    private void setSittingGraphData(BarChart barChart)
+    {
         ArrayList<BarEntry> entries = new ArrayList();
-        entries.add(new BarEntry(0, 60));
-        entries.add(new BarEntry(1, 99));
-        entries.add(new BarEntry(2, 65));
-        entries.add(new BarEntry(3, 17));
-        entries.add(new BarEntry(4, 93));
-        entries.add(new BarEntry(5, 73));
-        entries.add(new BarEntry(6, 83));
+
+        //Log.d("Fri sit",mDailyTotalsData.get(getString(R.string.fri_string_key)).getMax_sit()+"");
+
+        try {
+            long satMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.sat_string_key)).getMax_sit());
+
+            long friMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.fri_string_key)).getMax_sit());
+
+            long thurMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.thu_string_key)).getMax_sit());
+
+            long wedMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.wed_string_key)).getMax_sit());
+
+            long tueMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.tue_string_key)).getMax_sit());
+
+            long monMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.mon_string_key)).getMax_sit());
+
+            long sunMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.sun_string_key)).getMax_sit());
+
+            //Add a list of bar entries
+            entries.add(new BarEntry(0, satMinutes));
+            entries.add(new BarEntry(1, friMinutes));
+            //Log.d("Fri",friMinutes+"");
+            entries.add(new BarEntry(2, thurMinutes));
+            entries.add(new BarEntry(3, wedMinutes));
+            entries.add(new BarEntry(4, tueMinutes));
+            entries.add(new BarEntry(5, monMinutes));
+            entries.add(new BarEntry(6, sunMinutes));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //Note : These entries can be replaced by real-time data, say, from an API
 
@@ -387,18 +433,31 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
      *
      * Set the colors for different bars and the bar width of the bars.
      */
-    private void setWaterGraphData(BarChart barChart) {
-
-        //Add a list of bar entries
+    private void setWaterGraphData(BarChart barChart)
+    {
         ArrayList<BarEntry> entries = new ArrayList();
-        entries.add(new BarEntry(0, 60));
-        entries.add(new BarEntry(1, 99));
-        entries.add(new BarEntry(2, 65));
-        entries.add(new BarEntry(3, 17));
-        entries.add(new BarEntry(4, 93));
-        entries.add(new BarEntry(5, 73));
-        entries.add(new BarEntry(6, 83));
 
+        try {
+            float satWater = mDailyTotalsData.get(getString(R.string.sat_string_key)).getWater_total();
+            float friWater = mDailyTotalsData.get(getString(R.string.fri_string_key)).getWater_total();
+            float thurWater = mDailyTotalsData.get(getString(R.string.thu_string_key)).getWater_total();
+            float wedWater = mDailyTotalsData.get(getString(R.string.wed_string_key)).getWater_total();
+            float tueWater = mDailyTotalsData.get(getString(R.string.tue_string_key)).getWater_total();
+            float monWater = mDailyTotalsData.get(getString(R.string.mon_string_key)).getWater_total();
+            float sunWater = mDailyTotalsData.get(getString(R.string.sun_string_key)).getWater_total();
+
+            //Add a list of bar entries
+            entries.add(new BarEntry(0, satWater));
+            entries.add(new BarEntry(1, friWater));
+            entries.add(new BarEntry(2, thurWater));
+            entries.add(new BarEntry(3, wedWater));
+            entries.add(new BarEntry(4, tueWater));
+            entries.add(new BarEntry(5, monWater));
+            entries.add(new BarEntry(6, sunWater));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //Note : These entries can be replaced by real-time data, say, from an API
 
         //To display the data in a bar chart, you need to initialize a BarDataSet instance.
