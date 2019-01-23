@@ -266,18 +266,22 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
     //set labels
     private void setLabels(XAxis xAxis)
     {
-        String[] labels = new String[7];  //mDailyTotalsData.size()
-        labels[0]= mDailyTotalsData.get(getString(R.string.sat_string_key)).getDate_str();  //"Sat 1/12";
-        labels[1]= mDailyTotalsData.get(getString(R.string.fri_string_key)).getDate_str(); //"Fri 1/11";
-        labels[2]= mDailyTotalsData.get(getString(R.string.thu_string_key)).getDate_str(); //"Thu 1/10";
-        labels[3]= mDailyTotalsData.get(getString(R.string.wed_string_key)).getDate_str();  //"Wed 1/09";
-        labels[4]= mDailyTotalsData.get(getString(R.string.tue_string_key)).getDate_str(); //"Tue 1/08";
-        labels[5]= mDailyTotalsData.get(getString(R.string.mon_string_key)).getDate_str(); //"Mon 1/08";
-        labels[6]= mDailyTotalsData.get(getString(R.string.sun_string_key)).getDate_str();  //"Sun 1/13";
+        try {
+            String[] labels = new String[7];  //mDailyTotalsData.size()
+            labels[0] = mDailyTotalsData.get(getString(R.string.sat_string_key)).getDate_str();  //"Sat 1/12";
+            labels[1] = mDailyTotalsData.get(getString(R.string.fri_string_key)).getDate_str(); //"Fri 1/11";
+            labels[2] = mDailyTotalsData.get(getString(R.string.thu_string_key)).getDate_str(); //"Thu 1/10";
+            labels[3] = mDailyTotalsData.get(getString(R.string.wed_string_key)).getDate_str();  //"Wed 1/09";
+            labels[4] = mDailyTotalsData.get(getString(R.string.tue_string_key)).getDate_str(); //"Tue 1/08";
+            labels[5] = mDailyTotalsData.get(getString(R.string.mon_string_key)).getDate_str(); //"Mon 1/08";
+            labels[6] = mDailyTotalsData.get(getString(R.string.sun_string_key)).getDate_str();  //"Sun 1/13";
 
-        xAxis.setLabelCount(labels.length);
-
-        xAxis.setValueFormatter(new XAxisValueFormatter(labels));
+            xAxis.setLabelCount(labels.length);
+            xAxis.setValueFormatter(new XAxisValueFormatter(labels));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public class XAxisValueFormatter implements IAxisValueFormatter {
