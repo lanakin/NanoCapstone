@@ -1,10 +1,13 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
-    android:padding="@dimen/widget_margin">
+    android:background="@android:color/white"
+    android:padding="@dimen/widget_margin"
+    android:orientation="horizontal"
+    android:gravity="center"
+    >
 
-    <TextView
+    <!--<TextView
         android:id="@+id/appwidget_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,6 +19,14 @@
         android:text="@string/appwidget_text"
         android:textColor="#ffffff"
         android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:textStyle="bold|italic" />-->
 
-</RelativeLayout>
+    <Chronometer
+        android:id="@+id/widgetChronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:layout_margin="10dp"
+        />
+
+</LinearLayout>

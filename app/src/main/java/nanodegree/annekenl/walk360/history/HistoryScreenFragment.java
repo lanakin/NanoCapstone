@@ -116,10 +116,8 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
     }
 
     @Override
-    public void onDailyTotalsReadFinished() //HashMap<String, SingleDayTotals> resultData)
+    public void onDailyTotalsReadFinished()
     {
-        //mDailyTotalsData = resultData;
-
         if(mDailyTotalsData.size() != 0) {
             setSittingBarChart(mSittingChart);
             setWalkingBarChart(mWalkingChart);
@@ -135,8 +133,6 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
      */
     private void setSittingBarChart(BarChart barChart)
     {
-        //skill_rating_chart is the id of the XML layout
-
         barChart.setDrawBarShadow(false);
         Description description = new Description();
         description.setText("");
@@ -144,7 +140,7 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
 
         barChart.getLegend().setEnabled(false);
         barChart.setPinchZoom(false);
-        barChart.setDrawValueAboveBar(true); /* false - 0 no bar to be drawn runs into label a tiny bit */
+        barChart.setDrawValueAboveBar(true); /* false - "0" means no bar to be drawn, runs into label a tiny bit */
         barChart.setTouchEnabled(false);
 
         //Display the axis on the left
@@ -179,8 +175,6 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
      */
     private void setWalkingBarChart(BarChart barChart)
     {
-        //skill_rating_chart is the id of the XML layout
-
         barChart.setDrawBarShadow(false);
         Description description = new Description();
         description.setText("");
@@ -188,7 +182,7 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
 
         barChart.getLegend().setEnabled(false);
         barChart.setPinchZoom(false);
-        barChart.setDrawValueAboveBar(true); /* false - 0 no bar to be drawn runs into label a tiny bit */
+        barChart.setDrawValueAboveBar(true); /* false - "0" means no bar to be drawn, runs into label a tiny bit */
         barChart.setTouchEnabled(false);
 
         //Display the axis on the left
@@ -223,8 +217,6 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
      */
     private void setWaterBarChart(BarChart barChart)
     {
-        //skill_rating_chart is the id of the XML layout
-
         barChart.setDrawBarShadow(false);
         Description description = new Description();
         description.setText("");
@@ -232,7 +224,7 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
 
         barChart.getLegend().setEnabled(false);
         barChart.setPinchZoom(false);
-        barChart.setDrawValueAboveBar(true); /* false - 0 no bar to be drawn runs into label a tiny bit */
+        barChart.setDrawValueAboveBar(true); /* false - "0" means no bar to be drawn, runs into label a tiny bit */
         barChart.setTouchEnabled(false);
 
         //Display the axis on the left
@@ -374,8 +366,6 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
     {
         ArrayList<BarEntry> entries = new ArrayList();
 
-        //Log.d("Fri sit",mDailyTotalsData.get(getString(R.string.fri_string_key)).getMax_sit()+"");
-
         try {
             long satMinutes = TimeHelper.millisecondsToMinutes(mDailyTotalsData.get(getString(R.string.sat_string_key)).getMax_sit());
 
@@ -394,7 +384,6 @@ public class HistoryScreenFragment extends Fragment implements FirestoreHelper.O
             //Add a list of bar entries
             entries.add(new BarEntry(0, satMinutes));
             entries.add(new BarEntry(1, friMinutes));
-            //Log.d("Fri",friMinutes+"");
             entries.add(new BarEntry(2, thurMinutes));
             entries.add(new BarEntry(3, wedMinutes));
             entries.add(new BarEntry(4, tueMinutes));
