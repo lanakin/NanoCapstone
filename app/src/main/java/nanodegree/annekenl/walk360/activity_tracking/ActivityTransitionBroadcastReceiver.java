@@ -19,10 +19,12 @@ import com.google.android.gms.location.ActivityTransitionEvent;
 import com.google.android.gms.location.ActivityTransitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
+import java.util.Calendar;
 import java.util.List;
 
 import nanodegree.annekenl.walk360.alarm_manager.AlarmManagerHelper;
 import nanodegree.annekenl.walk360.utility.TimeHelper;
+import nanodegree.annekenl.walk360.widget.UpdateWidgetService;
 
 public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
 {
@@ -60,15 +62,18 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
                 transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track exact start of event for chronometer/duration
 
                 //test
-                /*transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
+                transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
                         + " " + ActivityTrackerHelper.activityTransitionTypeToString(mContext, mostRecentTransition.getTransitionType())
                         + " " + Calendar.getInstance().getTime() //wall time
-                        + "\n";*/
+                        + "\n";
 
-               /* PreferenceManager.getDefaultSharedPreferences(mContext)
+                PreferenceManager.getDefaultSharedPreferences(mContext)
                         .edit()
                         .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, transTest)
-                        .commit();*/
+                        .commit();
+
+                Intent updateWidgetIntent = new Intent(mContext, UpdateWidgetService.class);
+                mContext.startService(updateWidgetIntent);
 
                 switch (mostRecentTransition.getActivityType())
                 {

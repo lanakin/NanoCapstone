@@ -3,24 +3,30 @@ package nanodegree.annekenl.walk360.widget;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
 import nanodegree.annekenl.walk360.R;
+import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
 
 /**
  * Implementation of App Widget functionality.
  */
-public class Walk360Widget extends AppWidgetProvider {
+public class Walk360Widget extends AppWidgetProvider
+{
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
         //CharSequence widgetText = context.getString(R.string.appwidget_text);
 
+        String test = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext())
+                .getString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, "--/--");
+
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.walk360_widget);
 
-       // views.setTextViewText(R.id.appwidget_text, widgetText);
+        views.setTextViewText(R.id.appwidget_text, test);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -29,9 +35,9 @@ public class Walk360Widget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
+        //for (int appWidgetId : appWidgetIds) {
+           // updateAppWidget(context, appWidgetManager, appWidgetId);
+        //}
     }
 
     @Override
@@ -43,5 +49,6 @@ public class Walk360Widget extends AppWidgetProvider {
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
     }
+
 }
 

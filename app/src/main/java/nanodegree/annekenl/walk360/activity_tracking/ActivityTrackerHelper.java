@@ -26,7 +26,7 @@ import nanodegree.annekenl.walk360.utility.TimeHelper;
 
 public class ActivityTrackerHelper
 {
-    //public static final String DETECTED_ACTIVITY_KEY = "DETECTED_ACTIVITY_360";  //test string
+    public static final String DETECTED_ACTIVITY_KEY = "DETECTED_ACTIVITY_360";  //test string
 
     public static final String DETECTED_NON_ACTIVITY_KEY = "DETECTED_NON_ACTIVITY_360"; //still/sitting start time
     public static final long MAX_INACTIVE_TIME_MINUTES = 5;
