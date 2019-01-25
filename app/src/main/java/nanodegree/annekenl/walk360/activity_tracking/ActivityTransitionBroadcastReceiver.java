@@ -19,7 +19,6 @@ import com.google.android.gms.location.ActivityTransitionEvent;
 import com.google.android.gms.location.ActivityTransitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
-import java.util.Calendar;
 import java.util.List;
 
 import nanodegree.annekenl.walk360.alarm_manager.AlarmManagerHelper;
@@ -44,7 +43,6 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
         if (ActivityTransitionResult.hasResult(intent))
         {
             ActivityTransitionResult result = ActivityTransitionResult.extractResult(intent);
-            String transTest = "";
             mContext = context;
 
             /*boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -59,21 +57,12 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
 
                 stillStartTime = System.currentTimeMillis();  //wall time
 
-                transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track exact start of event for chronometer/duration
+                transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track exact start of event for chronometer/duration  **
 
-                //test
-                transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
-                        + " " + ActivityTrackerHelper.activityTransitionTypeToString(mContext, mostRecentTransition.getTransitionType())
-                        + " " + Calendar.getInstance().getTime() //wall time
-                        + "\n";
-
-                PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .edit()
-                        .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, transTest)
-                        .commit();
-
-                Intent updateWidgetIntent = new Intent(mContext, UpdateWidgetService.class);
-                mContext.startService(updateWidgetIntent);
+                //Intent updateWidgetIntent = new Intent(mContext, UpdateWidgetService.class);
+                //mContext.startService(updateWidgetIntent);  //android 8.0+ cannot start service in background if it's not whitelist as high priority (battery optimization) -- one solution use JobIntentService
+                                                                //https://stackoverflow.com/questions/46445265/android-8-0-java-lang-illegalstateexception-not-allowed-to-start-service-inten
+                UpdateWidgetService.enqueueWork(mContext, new Intent());
 
                 switch (mostRecentTransition.getActivityType())
                 {
@@ -167,5 +156,16 @@ public class ActivityTransitionBroadcastReceiver extends BroadcastReceiver
 
         return elapsedTime;
     }
+
+    //test
+                /*transTest += ActivityTrackerHelper.activityTypeToString(mContext, mostRecentTransition.getActivityType())
+                        + " " + ActivityTrackerHelper.activityTransitionTypeToString(mContext, mostRecentTransition.getTransitionType())
+                        + " " + Calendar.getInstance().getTime() //wall time
+                        + "\n";
+
+                PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .edit()
+                        .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, transTest)
+                        .commit();*/
 
 }

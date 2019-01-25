@@ -64,11 +64,6 @@ public class MainActivity extends AppCompatActivity
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_home);
-
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .edit()
-                .putString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, "test")
-                .commit();
     }
 
     @Override

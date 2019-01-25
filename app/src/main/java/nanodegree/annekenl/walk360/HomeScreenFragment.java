@@ -104,7 +104,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
                 .registerOnSharedPreferenceChangeListener(this);
 
         updateDateTV();
-        updateChronometer();
+        updateActivityChronometer(mChronometer, mContext);
         updateMaxTimesTVs();
         updateWaterTotalTV();
         //updateTestTV();
@@ -118,42 +118,43 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         super.onPause();
     }
 
-    protected void updateChronometer()
+    /* hoping to re-use this method with walk360 widget but not currently setup in a way to do that with the widget's limitations*/
+    protected static void updateActivityChronometer(Chronometer theChronometer, Context context)
     {
-        boolean isTracking = PreferenceManager.getDefaultSharedPreferences(mContext)
+        boolean isTracking = PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(MainActivity.TRACK_STATUS_KEY, false);
 
         if(isTracking) {
-            boolean isActive = PreferenceManager.getDefaultSharedPreferences(mContext)
+            boolean isActive = PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
 
-            long startTime = PreferenceManager.getDefaultSharedPreferences(mContext)
+            long startTime = PreferenceManager.getDefaultSharedPreferences(context)
                     .getLong(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY, 0);
 
-            mChronometer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+            theChronometer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 
             if (startTime != 0) {
                 long currTime = TimeHelper.nanosecondsToMilliseconds(startTime); //activity transition's time result is in real-time nanoseconds*
-                mChronometer.setBase(currTime);
+                theChronometer.setBase(currTime);
 
                 if (isActive) {
-                    String chronoFormat = "%s" + " " + getResources().getString(R.string.active_time);
-                    mChronometer.setFormat(chronoFormat);
-                    mChronometer.setTextColor(Color.GREEN);
+                    String chronoFormat = "%s" + " " + context.getApplicationContext().getResources().getString(R.string.active_time);
+                    theChronometer.setFormat(chronoFormat);
+                    theChronometer.setTextColor(Color.GREEN);
                 } else {
-                    String chronoFormat = "%s " + " " + getResources().getString(R.string.inactive_time);
-                    mChronometer.setFormat(chronoFormat);
-                    mChronometer.setTextColor(Color.RED);
+                    String chronoFormat = "%s " + " " + context.getApplicationContext().getResources().getString(R.string.inactive_time);
+                    theChronometer.setFormat(chronoFormat);
+                    theChronometer.setTextColor(Color.RED);
                 }
 
-                mChronometer.start();
+                theChronometer.start();
             }
         }
         else {
-            mChronometer.setBase(SystemClock.elapsedRealtime());
-            mChronometer.setFormat("%s");
-            mChronometer.setTextColor(Color.BLACK);
-            mChronometer.stop();
+            theChronometer.setBase(SystemClock.elapsedRealtime());
+            theChronometer.setFormat("%s");
+            theChronometer.setTextColor(Color.BLACK);
+            theChronometer.stop();
         }
     }
 
@@ -226,10 +227,10 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s)
     {
         if(s.equals(MainActivity.TRACK_STATUS_KEY)) {
-           updateChronometer();
+            updateActivityChronometer(mChronometer, mContext);
         }
         else if (s.equals(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY)) {
-            updateChronometer();
+            updateActivityChronometer(mChronometer, mContext);
             updateMaxTimesTVs();
             //updateTestTV();
         }

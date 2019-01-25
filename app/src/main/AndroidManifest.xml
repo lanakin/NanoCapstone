@@ -28,7 +28,9 @@
             android:name=".activity_tracking.ActivityDetectionIntentService"
             android:exported="false" />
 
-        <service android:name=".widget.UpdateWidgetService"></service>
+        <service android:name=".widget.UpdateWidgetService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            ></service>
 
         <receiver
             android:name=".activity_tracking.ActivityTransitionBroadcastReceiver"
