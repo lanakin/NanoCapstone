@@ -1,14 +1,15 @@
 package nanodegree.annekenl.walk360;
 
 import android.annotation.TargetApi;
-import android.app.Application;
+//import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
 import nanodegree.annekenl.walk360.utility.TimeHelper;
 
-public class Walk360Application extends Application
+public class Walk360Application extends MultiDexApplication //extends Application
 {
     private ActivityTrackerHelper mActivityTracker; //~
 
