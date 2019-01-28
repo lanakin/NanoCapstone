@@ -4,7 +4,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -20,9 +19,7 @@ import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-import nanodegree.annekenl.walk360.MainActivity;
 import nanodegree.annekenl.walk360.R;
-import nanodegree.annekenl.walk360.utility.TimeHelper;
 
 public class ActivityTrackerHelper
 {
@@ -64,18 +61,6 @@ public class ActivityTrackerHelper
                     @Override
                     public void onSuccess(Object o) {
                         Log.i("activityhelper", "Transitions successfully registered.");
-
-                        long currRealTimeNanos = TimeHelper.millisecondsToNanoseconds(SystemClock.elapsedRealtime());
-                        //activity transition's time result is in real-time nanoseconds*chronometer is expecting this
-                        long currWallTime = System.currentTimeMillis();  //wall time
-
-                        PreferenceManager.getDefaultSharedPreferences(mContext)
-                                .edit()
-                                .putBoolean(IS_ACTIVE_KEY, false)
-                                .putLong(CHRONOMETER_EVENT_START_KEY, currRealTimeNanos)
-                                .putLong(DETECTED_NON_ACTIVITY_KEY, currWallTime)
-                                .putBoolean(MainActivity.TRACK_STATUS_KEY, true)
-                                .commit();
                     }
                 });
         task.addOnFailureListener(
@@ -134,6 +119,43 @@ public class ActivityTrackerHelper
 
     }
 
+    public void resumeActivityTransitionUpdates()
+    {
+        ActivityTransitionRequest request = buildTransitionRequest();
+
+        // Your pending intent to receive callbacks.
+        mActivityTransIntent = getActivityTransitionPendingIntent();
+
+        Task task = mActivityRecognitionClient
+                .requestActivityTransitionUpdates(request, mActivityTransIntent);
+        task.addOnSuccessListener(
+                new OnSuccessListener() {
+                    @Override
+                    public void onSuccess(Object o) {
+                        Log.i("activityhelper", "Transitions successfully registered. (resume)");
+
+                        //long currRealTimeNanos = TimeHelper.millisecondsToNanoseconds(SystemClock.elapsedRealtime());
+                        //activity transition's time result is in real-time nanoseconds*chronometer is expecting this
+                        //long currWallTime = System.currentTimeMillis();  //wall time
+
+                        PreferenceManager.getDefaultSharedPreferences(mContext)
+                                .edit()
+                                //.putBoolean(IS_ACTIVE_KEY, false)
+                                .putLong(CHRONOMETER_EVENT_START_KEY, 0)
+                                .putLong(DETECTED_NON_ACTIVITY_KEY, 0)
+                                .putBoolean(mContext.getResources().getString(R.string.track_status_key), true)
+                                .commit();
+                    }
+                });
+        task.addOnFailureListener(
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(Exception e) {
+                        // Handle failure...
+                    }
+                });
+    }
+
     public void stopActivityTransitionUpdates()
     {
         Task<Void> task =
@@ -149,7 +171,7 @@ public class ActivityTrackerHelper
 
                         PreferenceManager.getDefaultSharedPreferences(mContext)
                                 .edit()
-                                .putBoolean(MainActivity.TRACK_STATUS_KEY, false)
+                                .putBoolean(mContext.getResources().getString(R.string.track_status_key), false)
                                 .commit();
                     }
                 });

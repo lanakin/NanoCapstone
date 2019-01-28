@@ -42,9 +42,9 @@ public class SettingsScreenFragment extends PreferenceFragmentCompat implements
 
         if (preference != null)
         {
-            if(key.equals(getResources().getString(R.string.reminders_switch_walk360_key)))
+            if(key.equals(getResources().getString(R.string.track_status_key)))
             {
-                boolean value = sharedPreferences.getBoolean(key, false);
+                boolean value = sharedPreferences.getBoolean(key, true);
                 Log.d("settings_prefs",value+"");
             }
             else if(key.equals(getResources().getString(R.string.days_walk360_key)))

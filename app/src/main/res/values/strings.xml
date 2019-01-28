@@ -27,6 +27,7 @@
     <string name="activity_goal_finished">Good Job!</string>
 
     <string name="reminders_switch_walk360_key" translatable="false">reminders_switch_walk360_key</string>
+    <string name="track_status_key" translatable="false">TRACK_STATUS_KEY</string>
     <string name="notifications">Walking Reminders</string>
     <string name="notifications_summary">Track Activity and Receive Notifications</string>
 

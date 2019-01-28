@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 {
     public static final String AUTH_STATUS_KEY = "AUTH_STATUS_KEY";
     public static final String AUTH_USERID_KEY = "AUTH_USERID_KEY";
-    public static final String TRACK_STATUS_KEY = "TRACK_STATUS_KEY";
+    //public static final String TRACK_STATUS_KEY = "TRACK_STATUS_KEY";
 
     public final static String CHANNEL_ID = "TIME_TO_MOVE";
     public final static int RC_SIGN_IN = 500;
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity
         }
         else if (item.getItemId()==R.id.track_activity) {
             boolean isTracking = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                    .getBoolean(TRACK_STATUS_KEY, false);
+                    .getBoolean(getString(R.string.track_status_key), false);
 
             if(!isTracking) {
                resumeTracking();
@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity
                         //requestActivitytrans
                         try {
                             Walk360Application mApplication = (Walk360Application) getApplication();
-                            mApplication.getmActivityTracker().requestActivityTransitionUpdates();
+                            mApplication.getmActivityTracker().resumeActivityTransitionUpdates();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

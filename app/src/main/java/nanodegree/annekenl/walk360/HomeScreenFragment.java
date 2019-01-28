@@ -108,10 +108,10 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     }
 
     /* hoping to re-use this method with walk360 widget but not currently setup in a way to do that with the widget's limitations*/
-    protected static void updateActivityChronometer(Chronometer theChronometer, Context context)
+    protected void updateActivityChronometer(Chronometer theChronometer, Context context)
     {
         boolean isTracking = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(MainActivity.TRACK_STATUS_KEY, false);
+                .getBoolean(getString(R.string.track_status_key), false);
 
         if(isTracking) {
             boolean isActive = PreferenceManager.getDefaultSharedPreferences(context)
@@ -204,7 +204,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s)
     {
-        if(s.equals(MainActivity.TRACK_STATUS_KEY)) {
+        if(s.equals(getString(R.string.track_status_key))) {
             updateActivityChronometer(mChronometer, mContext);
         }
         else if (s.equals(ActivityTrackerHelper.CHRONOMETER_EVENT_START_KEY)) {

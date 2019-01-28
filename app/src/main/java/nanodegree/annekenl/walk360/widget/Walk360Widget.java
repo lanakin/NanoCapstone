@@ -8,7 +8,6 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
-import nanodegree.annekenl.walk360.MainActivity;
 import nanodegree.annekenl.walk360.R;
 import nanodegree.annekenl.walk360.activity_tracking.ActivityTrackerHelper;
 import nanodegree.annekenl.walk360.utility.TimeHelper;
@@ -22,7 +21,7 @@ public class Walk360Widget extends AppWidgetProvider
     static void updateWidgetChronometerInfo(RemoteViews views, Context context)
     {
         boolean isTracking = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(MainActivity.TRACK_STATUS_KEY, false);
+                .getBoolean(context.getApplicationContext().getResources().getString(R.string.track_status_key), false);
 
         if(isTracking) {
             boolean isActive = PreferenceManager.getDefaultSharedPreferences(context)

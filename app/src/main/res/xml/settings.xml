@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
     <SwitchPreferenceCompat
-        android:key="@string/reminders_switch_walk360_key"
+        android:key="@string/track_status_key"
         android:title="@string/notifications"
         android:summary="@string/notifications_summary"
-        android:defaultValue="false" />
+        android:defaultValue="true" />
+    <!-- "@string/reminders_switch_walk360_key" -->
 
     <MultiSelectListPreference
         android:dialogTitle="@string/choose_days"

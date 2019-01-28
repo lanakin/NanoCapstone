@@ -23,7 +23,13 @@ public class Walk360Application extends MultiDexApplication //extends Applicatio
         Log.d("application","oncreate");
 
         mActivityTracker = new ActivityTrackerHelper(this);
-        //mActivityTracker.requestActivityTransitionUpdates();  //start with monitoring for "still start" transition
+
+        boolean isTracking = PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
+                .getBoolean(getString(R.string.track_status_key), false);
+
+        if(isTracking) {
+            mActivityTracker.requestActivityTransitionUpdates();  //start monitoring true by default
+        }
 
         checkDayStr();
     }
