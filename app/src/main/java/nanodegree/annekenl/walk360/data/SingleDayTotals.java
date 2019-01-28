@@ -14,9 +14,8 @@ public class SingleDayTotals
     public SingleDayTotals(){}
 
     public SingleDayTotals(String date_str, long max_walk,
-                           long max_sit, float water_total) //String dayofWeek
+                           long max_sit, float water_total)
     {
-        //this.dayofWeek = dayofWeek;
         this.date_str = date_str;
         this.max_walk = max_walk;
         this.max_sit = max_sit;
@@ -28,8 +27,8 @@ public class SingleDayTotals
         return 0;
     }
 
-    private SingleDayTotals(Parcel in){
-        //this.dayofWeek = in.readString();
+    private SingleDayTotals(Parcel in)
+    {
         this.date_str = in.readString();
         this.max_walk = in.readLong();
         this.max_sit = in.readLong();
@@ -38,7 +37,6 @@ public class SingleDayTotals
 
     public void writeToParcel(Parcel out, int flags)
     {
-        //out.writeString(dayofWeek);
         out.writeString(date_str);
         out.writeFloat(max_walk);
         out.writeFloat(max_sit);
@@ -54,14 +52,6 @@ public class SingleDayTotals
             return new SingleDayTotals[size];
         }
     };
-
-   /* public String getDayofWeek() {
-        return dayofWeek;
-    }
-
-    public void setDayofWeek(String dayofWeek) {
-        this.dayofWeek = dayofWeek;
-    }*/
 
     public String getDate_str() {
         return date_str;

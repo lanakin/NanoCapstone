@@ -5,6 +5,7 @@ package nanodegree.annekenl.walk360.notifications;
 
 //https://firebase.google.com/docs/cloud-messaging/android/client?authuser=0
 
+//this class is currently not needed
 public class MyFirebaseMessagingService{} /*extends FirebaseMessagingService {
 
     public static final String TAG = "MsgFirebaseServ";

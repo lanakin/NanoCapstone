@@ -34,19 +34,11 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     private Context mContext;
     private Chronometer mChronometer;
     private TextView mDate;
-    //private TextView homeTV;
     private TextView sittingMaxTV;
     private TextView walkingMaxTV;
     private TextView waterTotalTV;
     private Button addWater;
     private Button subWater; //basically to allow user to undo a mistaken amt.
-
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public HomeScreenFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -65,8 +57,6 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         mChronometer = (Chronometer) rootView.findViewById(R.id.simpleChronometer); // initiate a chronometer
 
         mDate = rootView.findViewById(R.id.homeDateTV);
-        //homeTV = rootView.findViewById(R.id.homeScreenTV);
-
         sittingMaxTV = rootView.findViewById(R.id.sitting_max);
         walkingMaxTV = rootView.findViewById(R.id.walking_max);
         waterTotalTV = rootView.findViewById(R.id.water_total);
@@ -107,7 +97,6 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         updateActivityChronometer(mChronometer, mContext);
         updateMaxTimesTVs();
         updateWaterTotalTV();
-        //updateTestTV();
     }
 
 
@@ -201,7 +190,8 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
 
         float waterTotalCups = waterTotalOZ/8;
 
-        waterTotalTV.setText("Today's Total: "+String.format("%.2f",waterTotalOZ) + " ounces" + " (" + String.format("%.2f", waterTotalCups) + " cups)");
+        waterTotalTV.setText(getString(R.string.todays_total)+": "+String.format("%.2f",waterTotalOZ) +" "+getString(R.string.ounces)
+                + " (" + String.format("%.2f", waterTotalCups) +" "+getString(R.string.cups)+")");
     }
 
     private void updateDateTV()
@@ -210,18 +200,6 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
                 .getString(Walk360Application.TODAY_STR_KEY, "");
         mDate.setText(today);
     }
-
-  /*  private void updateTestTV()
-    {
-        String temp =
-                PreferenceManager.getDefaultSharedPreferences(mContext)
-                        .getString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, "");
-
-        temp = temp.replace("Still Started","Walking Started At: ");
-        temp = temp.replace("Still Stopped", "Sitting Started At: ");
-        homeTV.setText(temp);
-    }*/
-
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s)
@@ -234,9 +212,6 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
             updateMaxTimesTVs();
             //updateTestTV();
         }
-        //else if(s.equals(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY)) {
-            //updateTestTV();
-        //}
         else if(s.equals(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY)) {
             updateWaterTotalTV();
         }
@@ -246,7 +221,6 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
     }
 
 
-    /** to do later - store text in strings.xml & possibly combine these methods **/
     private void addWaterAmt()
     {
         final float waterTotalOZ = PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -266,8 +240,8 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         builder.setView(input);
 
-        builder.setTitle("Add Water Amount")
-                .setMessage("Enter the amount of water consumed in ounces (8 ounces in a cup): ")
+        builder.setTitle(getString(R.string.add_water_amt))
+                .setMessage(R.string.add_water_instruct)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         try {
@@ -280,7 +254,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
                                     .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, newTotal)
                                     .commit();
                         } catch (Exception e) {
-                            Toast.makeText(mContext, "No water amount was entered", Toast.LENGTH_SHORT);
+                            Toast.makeText(mContext, R.string.water_input_error, Toast.LENGTH_SHORT).show();
                         }
                     }
                 })
@@ -314,8 +288,8 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         input.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         builder.setView(input);
 
-        builder.setTitle("Subtract Water Amount")
-                .setMessage("Enter the amount of water to subtract (amount wrongly entered): ")
+        builder.setTitle(R.string.sub_water_amt)
+                .setMessage(R.string.sub_water_instruct)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         try {
@@ -328,7 +302,7 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
                                     .putFloat(WaterCalculatorScreenFragment.WATER_DAILY_TOTAL_KEY, newTotal)
                                     .commit();
                         } catch (Exception e) {
-                            Toast.makeText(mContext, "No water amount was entered", Toast.LENGTH_SHORT);
+                            Toast.makeText(mContext, R.string.water_input_error, Toast.LENGTH_SHORT).show();
                         }
                     }
                 })

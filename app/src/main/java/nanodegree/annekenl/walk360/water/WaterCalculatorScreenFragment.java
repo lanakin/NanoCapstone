@@ -55,11 +55,12 @@ public class WaterCalculatorScreenFragment extends Fragment
                     double waterAmtOZ = bodyWeight * 0.5; //0.5 ounces * body weight in lbs. = water requirement in ounces
                     double waterAmtCUPS = waterAmtOZ / 8;
 
-                    String waterAmtStr = String.format("%.2f", waterAmtOZ) + " ounces" + " (" + String.format("%.2f", waterAmtCUPS) + " cups)";
+                    String waterAmtStr = String.format("%.2f", waterAmtOZ) + " " + getString(R.string.ounces)
+                            + " (" + String.format("%.2f", waterAmtCUPS) +" "+getString(R.string.cups)+")";
                     result.setText(waterAmtStr);
 
                 } catch (Exception e) {
-                    result.setText("Error: No Body Weight was Entered.");
+                    result.setText(getString(R.string.water_calc_error));
                 }
             }
         });

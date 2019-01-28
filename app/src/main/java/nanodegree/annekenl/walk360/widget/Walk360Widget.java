@@ -36,7 +36,6 @@ public class Walk360Widget extends AppWidgetProvider
 
             if (startTime != 0) {
                 currTime = TimeHelper.nanosecondsToMilliseconds(startTime); //activity transition's time result is in real-time nanoseconds*
-                //theChronometer.setBase(currTime);
 
                 if (isActive) {
                     chronoFormat = "%s" + " " + context.getApplicationContext().getResources().getString(R.string.active_time);
@@ -56,16 +55,10 @@ public class Walk360Widget extends AppWidgetProvider
     }
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
-
-        //CharSequence widgetText = context.getString(R.string.appwidget_text);
-        //String test = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext())
-                //.getString(ActivityTrackerHelper.DETECTED_ACTIVITY_KEY, "--/--");
-
+                                int appWidgetId)
+    {
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.walk360_widget);
-
-        //views.setTextViewText(R.id.appwidget_text, test);
 
         updateWidgetChronometerInfo(views,context);
 

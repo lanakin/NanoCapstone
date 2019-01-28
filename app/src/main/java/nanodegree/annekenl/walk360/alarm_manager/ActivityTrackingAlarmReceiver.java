@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.widget.Toast;
 
 import nanodegree.annekenl.walk360.MainActivity;
 import nanodegree.annekenl.walk360.R;
@@ -19,9 +18,7 @@ import nanodegree.annekenl.walk360.utility.TimeHelper;
 public class ActivityTrackingAlarmReceiver extends BroadcastReceiver
 {
     private AlarmManagerHelper mAlarmManagerHelper;
-    //private ActivityTrackerHelper mActivityTracker;
     protected final static long NOTIFICATION_EXPIRE_TIME = 15*TimeHelper.minuteInMilliseconds;
-
 
     @Override
     public void onReceive(Context context, Intent intent)
@@ -33,22 +30,11 @@ public class ActivityTrackingAlarmReceiver extends BroadcastReceiver
         {
             long inactiveTime = TimeHelper.elapsedWallTimeMillisInMinutes(startTime);
 
-            if(inactiveTime >= ActivityTrackerHelper.MAX_INACTIVE_TIME_MINUTES)
-            {
-                Toast.makeText(context, "Sitting for " + inactiveTime + " minutes. GET MOVING",
-                        Toast.LENGTH_LONG).show();
-
+            if(inactiveTime >= ActivityTrackerHelper.MAX_INACTIVE_TIME_MINUTES) {
                 alertTimeToMove(context);
-                //SET ALARM OFR ADDITIONAL REMINDERS AFTER THE MAX MARK -revist later
-                //setReminderCheckForMaxInactivity(context,NOTIFICATION_EXPIRE_TIME    //check again if user missed the notification to move
-                                                            //+ AlarmManagerHelper.minuteInMilliseconds);   // and is still inactive
 
             }
-            else
-            {
-                Toast.makeText(context, "Sitting for " + inactiveTime + " minutes." ,
-                        Toast.LENGTH_LONG).show();
-
+            else {
                 //SET ALARM TO CHECK AGAIN FOR MAX INACTIVITY
                 long minutesUntilTimeToMove =
                         ActivityTrackerHelper.MAX_INACTIVE_TIME_MINUTES - inactiveTime;
@@ -60,7 +46,6 @@ public class ActivityTrackingAlarmReceiver extends BroadcastReceiver
         {
             //IF START TIME IS 0 THEN USER RECENTLY WAS ACTIVE;
             //STILLNESS START TIME WILL BE RESET WITH NEXT START OF INACTIVITY
-            //Toast.makeText(context, "STILLNESS ALREADY STOPPED", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -83,7 +68,7 @@ public class ActivityTrackingAlarmReceiver extends BroadcastReceiver
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_pedestrian_walking)
                 //.setContentTitle(textTitle)
-                .setContentText("Time to Walk!")
+                .setContentText(context.getResources().getString(R.string.time_to_walk))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .setContentIntent(pendingIntent)

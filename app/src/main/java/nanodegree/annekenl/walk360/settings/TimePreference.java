@@ -26,33 +26,6 @@ public class TimePreference extends DialogPreference
         return a.getString(index);
     }
 
-    /* Implement this to set the initial value of the Preference.
-     * If restorePersistedValue is true, you should restore the Preference value from the SharedPreferences.
-     * If restorePersistedValue is false, you should set the Preference value to defaultValue that is given
-     * (and possibly store to SharedPreferences if shouldPersist() is true).
-     * In case of using PreferenceDataStore, the restorePersistedValue is always true but the
-     * default value (if provided) is set.
-     *
-     * Preference.onSetInitialValue(boolean, Object) has been deprecated and replaced with onSetInitialValue(Object).
-     * PreferenceDataStore now also correctly restores default values.  ---support 28.0.0
-     */
-    @Override
-   /* protected void onSetInitialValue(boolean restoreValue, Object defaultValue)
-    {
-        String value;
-       if (restoreValue)
-        {
-            if (defaultValue == null) value = getPersistedString("00:00"); //default value can be set in xml
-            else value = getPersistedString(defaultValue.toString());
-        }
-        else
-        {
-            value = defaultValue.toString();
-        }
-
-        hour = parseHour(value);
-        minute = parseMinute(value);
-    }*/
     protected void onSetInitialValue(Object defaultValue)
     {
         String value;

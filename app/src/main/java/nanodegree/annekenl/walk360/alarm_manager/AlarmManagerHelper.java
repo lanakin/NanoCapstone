@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build.VERSION;
-import android.widget.Toast;
 
 import nanodegree.annekenl.walk360.utility.TimeHelper;
 
@@ -37,8 +36,8 @@ public class AlarmManagerHelper
                     + (minutes * TimeHelper.minuteInMilliseconds), pendingIntent);
         }
 
-        Toast.makeText(mContext, "Alarm set in " + minutes + " minutes",
-                Toast.LENGTH_LONG).show();
+        //Toast.makeText(mContext, "Alarm set in " + minutes + " minutes",
+               // Toast.LENGTH_LONG).show();
     }
 
 }

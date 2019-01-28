@@ -26,8 +26,6 @@ public class ActivityDetectionIntentService extends IntentService
 {
     protected static final String TAG = "WALK360_USER_ACTIVITY";
 
-    //public static final int ACTIVITY_DETECTION_INTERVAL = 20; //20 seconds
-
     //private ActivityTrackerHelper mActivityTracker;
 
     //Call the super IntentService constructor with the name for the worker thread
@@ -90,13 +88,4 @@ public class ActivityDetectionIntentService extends IntentService
 
         }
     }
-
-    /*public void getQuickRestartOfUserActivity()
-    {
-        stillStartTime = System.currentTimeMillis();  //wall time
-
-        transitionTimeNanos = mostRecentTransition.getElapsedRealTimeNanos(); //system time - will track exact start of event for chronometer/duration
-
-        isActive
-    }*/
 }

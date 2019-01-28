@@ -21,23 +21,10 @@
 
     <string name="inactive_time">Inactive Time</string>
     <string name="active_time">Active Time</string>
+
     <string name="inactivity_alert">Get Moving!</string>
     <string name="activity_goal_started">Keep Going!</string>
     <string name="activity_goal_finished">Good Job!</string>
-
-
-    <!--  <string name="jan">January</string>
-    <string name="feb">February</string>
-    <string name="mar">March</string>
-    <string name="apr">April</string>
-    <string name="may">May</string>
-    <string name="jun">June</string>
-    <string name="jul">July</string>
-    <string name="aug">August</string>
-    <string name="sep">September</string>
-    <string name="oct">October</string>
-    <string name="nov">November</string>
-    <string name="dec">December</string>-->
 
     <string name="reminders_switch_walk360_key" translatable="false">reminders_switch_walk360_key</string>
     <string name="notifications">Walking Reminders</string>
@@ -103,6 +90,7 @@
     <string name="water_input_hint">weight in pounds</string>
     <string name="water_calculate_btn_label">Calculate</string>
     <string name="water_result_btn_label">Recommendation:</string>
+    <string name="water_calc_error">Error: No Body Weight was Entered.</string>
 
     <string name="water_add_btn_label">+ Water Intake</string>
     <string name="water_sub_btn_label">- Water Intake</string>
@@ -119,6 +107,32 @@
     <string name="sat_string_key" translatable="false">Sat</string>
     <string name="sun_string_key" translatable="false">Sun</string>
     <string name="not_available">N/A</string>
-    <string name="appwidget_text">EXAMPLE</string>
+
     <string name="add_widget">Add widget</string>
+
+    <string name="time_to_walk">Time to Walk!</string>
+    <string name="daily_totals_reset">Daily Totals Reset for a new day.</string>
+    <string name="goal_max_display_str">GOAL MAX SITTING TIME OF 1 HOUR OR LESS</string>
+    <string name="max_sit_display_str">Max Sitting Time:</string>
+    <string name="max_walk_display_str">Max Walking Time:</string>
+
+    <string name="todays_total">Today\'s Total</string>
+    <string name="ounces">ounces</string>
+    <string name="cups">cups</string>
+    <string name="add_water_amt">Add Water Amount</string>
+    <string name="add_water_instruct">Enter the amount of water consumed in ounces (8 ounces in a cup):</string>
+    <string name="water_input_error">No water amount was entered.</string>
+    <string name="sub_water_amt">Subtract Water Amount</string>
+    <string name="sub_water_instruct">Enter the amount of water to subtract (amount wrongly entered):</string>
+
+    <string name="actvity_tracking_dialog_title_start">START Activity Tracking</string>
+    <string name="activity_tracking_dialog_message_start">Do you want the app to start tracking activity?\n\n
+        Note: It may initially take a minute or two for your device to detect walking activity.\n\n
+        Activity Tracking can also be managed by navigating to the Settings Tab.</string>
+    <string name="actvity_tracking_dialog_title_stop">STOP Activity Tracking</string>
+    <string name="activity_tracking_dialog_message_stop">Do you want the app to stop tracking walking activity?\n\n
+        Activity Tracking can also be managed by navigating to the Settings Tab.</string>
+
+    <string name="logout_dialog_title">Log Out</string>
+    <string name="logout_dialog_message">Are you sure you want to log out? The app will close and you must sign in again later.</string>
 </resources>

@@ -12,7 +12,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -141,7 +140,7 @@ public class MainActivity extends AppCompatActivity
                         .putString(Walk360Application.TODAY_STR_KEY, TimeHelper.getTodayStr())
                         .commit();
 
-                Toast.makeText(this, "Daily Totals reset for a new day!", Toast.LENGTH_SHORT);
+                Toast.makeText(this, getString(R.string.daily_totals_reset), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -208,10 +207,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             builder = new AlertDialog.Builder(this);
         }
-        builder.setTitle("Activity Tracking")
-                .setMessage("Do you want the app to start tracking activity?"
-                        +"\n\n Note: It may initially take a minute or two for your device to detect walking activity."
-                        +"\n\n Activity Tracking can also be managed by navigating to the Settings Tab.")
+        builder.setTitle(R.string.actvity_tracking_dialog_title_start)
+                .setMessage(R.string.activity_tracking_dialog_message_start)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //requestActivitytrans
@@ -240,9 +237,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             builder = new AlertDialog.Builder(this);
         }
-        builder.setTitle("Activity Tracking")
-                .setMessage("Do you want the app to stop tracking walking activity?"
-                        +"\n\n Activity Tracking can also be managed by navigating to the Settings Tab.")
+        builder.setTitle(R.string.actvity_tracking_dialog_title_stop)
+                .setMessage(R.string.activity_tracking_dialog_message_stop)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         //stopActivityTrans
@@ -272,15 +268,15 @@ public class MainActivity extends AppCompatActivity
         } else {
             builder = new AlertDialog.Builder(this);
         }
-        builder.setTitle("Log Out")
-                .setMessage("Are you sure you want to log out? The app will close and you must sign in again later.")
+        builder.setTitle(R.string.logout_dialog_title)
+                .setMessage(R.string.logout_dialog_message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         AuthUI.getInstance()
                                 .signOut(getApplicationContext())
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        Log.d("signout", "completed");
+                                        //Log.d("signout", "completed");
                                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
                                                 .edit()
                                                 .putBoolean(AUTH_STATUS_KEY, false)
@@ -328,7 +324,7 @@ public class MainActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 mUser = FirebaseAuth.getInstance().getCurrentUser();
-                Log.d("myfirstore","user id: "+mUser.getUid());
+                //Log.d("myfirstore","user id: "+mUser.getUid());
 
                 PreferenceManager.getDefaultSharedPreferences(this)
                         .edit()
@@ -342,8 +338,8 @@ public class MainActivity extends AppCompatActivity
                 // Sign in failed. If response is null the user canceled the
                 // sign-in flow using the back button. Otherwise check
                 // response.getError().getErrorCode() and handle the error.
-                Log.d("signin", response.getError().getErrorCode()+"");
-                Toast.makeText(this, getResources().getString(R.string.user_signin_error_msg), Toast.LENGTH_SHORT);
+                //Log.d("signin", response.getError().getErrorCode()+"");
+                Toast.makeText(this, getResources().getString(R.string.user_signin_error_msg), Toast.LENGTH_SHORT).show();
             }
         }
     }
