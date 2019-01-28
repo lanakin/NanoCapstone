@@ -26,9 +26,7 @@ public class MyWidgetRemoteViewsFactory implements RemoteViewsService.RemoteView
 
     //called when the appwidget is created for the first time.
     @Override
-    public void onCreate() {
-
-    }
+    public void onCreate() { }
 
     @Override
     public void onDestroy() { }
@@ -64,11 +62,6 @@ public class MyWidgetRemoteViewsFactory implements RemoteViewsService.RemoteView
         return false;
     }
 
-    //called on start and when notifyAppWidgetViewDataChanged is called
     @Override
-    public void onDataSetChanged() {
-        //to do...
-        //Log.e("notify","test");
-        //mWidgetListItems = mDataHelper.getRecipeItems();
-    }
+    public void onDataSetChanged() { }
 }
