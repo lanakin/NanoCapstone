@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import java.util.Date;
 
 import static java.util.Locale.US;
 
@@ -47,10 +47,11 @@ public class TimeHelper
         String today = "";
 
         if(VERSION.SDK_INT <= 25) {
-            Calendar calendarToday = Calendar.getInstance();
+            //Calendar calendarToday = Calendar.getInstance();
             //today += calendarToday.DAY_OF_WEEK - 1;  //1 sun - sat 7
+            Date todayDate = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("EE MM/dd", US);
-            today += formatter.format(calendarToday);
+            today += formatter.format(todayDate);
         } else {
             LocalDate localDate = LocalDate.now(ZoneId.of("America/New_York"));
             //today += localDate.getDayOfWeek(); //1 sun - sat 7
