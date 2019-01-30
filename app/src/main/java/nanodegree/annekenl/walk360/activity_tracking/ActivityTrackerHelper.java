@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nanodegree.annekenl.walk360.R;
+import nanodegree.annekenl.walk360.widget.UpdateWidgetService;
 
 public class ActivityTrackerHelper
 {
@@ -173,6 +174,8 @@ public class ActivityTrackerHelper
                                 .edit()
                                 .putBoolean(mContext.getResources().getString(R.string.track_status_key), false)
                                 .commit();
+
+                        UpdateWidgetService.enqueueWork(mContext, new Intent());
                     }
                 });
 

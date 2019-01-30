@@ -49,7 +49,9 @@ public class Walk360Widget extends AppWidgetProvider
             }
         }
         else {
-            views.setChronometer(R.id.widgetChronometer,SystemClock.elapsedRealtime(),"%s",false);
+            views.setTextColor(R.id.widgetChronometer, Color.BLACK);
+            views.setChronometer(R.id.widgetChronometer,SystemClock.elapsedRealtime(),"%s" + " ",true);
+            views.setChronometer(R.id.widgetChronometer,SystemClock.elapsedRealtime(),"%s" + " ",false);
         }
     }
 

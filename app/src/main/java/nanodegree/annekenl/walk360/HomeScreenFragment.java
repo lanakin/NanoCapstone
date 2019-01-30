@@ -113,7 +113,8 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
         boolean isTracking = PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(getString(R.string.track_status_key), false);
 
-        if(isTracking) {
+        if(isTracking)
+        {
             boolean isActive = PreferenceManager.getDefaultSharedPreferences(context)
                     .getBoolean(ActivityTrackerHelper.IS_ACTIVE_KEY, false);
 
@@ -139,9 +140,11 @@ public class HomeScreenFragment extends Fragment  implements SharedPreferences.O
                 theChronometer.start();
             }
         }
-        else {
+        else
+        {
             theChronometer.setBase(SystemClock.elapsedRealtime());
-            theChronometer.setFormat("%s");
+            String chronoFormat = "%s " + " ";
+            theChronometer.setFormat(chronoFormat);
             theChronometer.setTextColor(Color.BLACK);
             theChronometer.stop();
         }
